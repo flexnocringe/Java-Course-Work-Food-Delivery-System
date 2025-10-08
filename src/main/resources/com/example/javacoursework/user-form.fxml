@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javacoursework.fxcontrollers.UserForm">
+   <children>
+      <Text layoutX="261.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Redirect works" />
+      <Button fx:id="redirectToLogIn" layoutX="248.0" layoutY="361.0" mnemonicParsing="false" onAction="#goToLogin" text="Go back to login" />
+      <RadioButton fx:id="userRadio" layoutX="50.0" layoutY="95.0" mnemonicParsing="false" onAction="#disableFields" selected="true" text="User">
+         <toggleGroup>
+            <ToggleGroup fx:id="userTypeSelecion" />
+         </toggleGroup></RadioButton>
+      <RadioButton fx:id="restaurantRadio" layoutX="261.0" layoutY="95.0" mnemonicParsing="false" onAction="#disableFields" text="Restaurant" toggleGroup="$userTypeSelecion" />
+      <RadioButton fx:id="driverRadio" layoutX="427.0" layoutY="95.0" mnemonicParsing="false" text="Driver" toggleGroup="$userTypeSelecion" />
+      <Button layoutX="249.0" layoutY="327.0" mnemonicParsing="false" text="Create new user" />
+      <AnchorPane fx:id="inputFields" layoutX="50.0" layoutY="129.0">
+         <children>
+            <TextField fx:id="nameField" layoutY="71.0" />
+            <TextField fx:id="surnameField" layoutY="109.0" />
+            <TextField fx:id="passwordField" layoutY="35.0" />
+            <TextField fx:id="phoneNumberField" layoutY="148.0" />
+            <TextField fx:id="addressField" layoutY="186.0" />
+            <TextField fx:id="usernameField" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

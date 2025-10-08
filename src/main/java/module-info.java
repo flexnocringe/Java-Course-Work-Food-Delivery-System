@@ -6,4 +6,6 @@ module com.example.javacoursework {
 
     opens com.example.javacoursework to javafx.fxml;
     exports com.example.javacoursework;
+    opens com.example.javacoursework.fxcontrollers to javafx.fxml;
+    exports com.example.javacoursework.fxcontrollers;
 }

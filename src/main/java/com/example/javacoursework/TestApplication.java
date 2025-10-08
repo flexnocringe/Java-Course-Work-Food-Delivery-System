@@ -13,13 +13,12 @@ public class TestApplication extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    @FXML
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("test.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("login-form.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 640, 480);
 
-        primaryStage.setTitle("Test Stage");
+        primaryStage.setTitle("Login page");
         primaryStage.setScene(scene);
         primaryStage.show();
 
