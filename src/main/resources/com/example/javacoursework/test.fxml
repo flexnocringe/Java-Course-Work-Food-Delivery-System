@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javacoursework.TestController">
+   <children>
+      <AnchorPane layoutX="200.0" layoutY="69.0" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Pane fx:id="testContainer" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: yellow;">
+               <children>
+                  <Button layoutX="74.0" layoutY="87.0" mnemonicParsing="false" text="Button" />
+                  <Button layoutX="74.0" layoutY="150.0" mnemonicParsing="false" text="Button" />
+                  <Button fx:id="userButton" layoutX="80.0" layoutY="36.0" mnemonicParsing="false" onAction="#accessUser" text="User" />
+               </children>
+            </Pane>
+         </children>
+      </AnchorPane>
+      <Text fx:id="testTeLabel" fill="#2e99c0" layoutX="289.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
+         <font>
+            <Font size="29.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

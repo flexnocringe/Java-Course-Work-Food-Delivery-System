@@ -8,7 +8,7 @@ import java.io.*;
 public class Utils {
     public static void writeUserToFile(User user){
         ObjectOutputStream out = null;
-        try(var file = new FileOutputStream("o.txt")) {
+        try(var file = new FileOutputStream("wolt.txt")) {
             out = new ObjectOutputStream(new BufferedOutputStream(file));
             out.writeObject(user);
         } catch (IOException e) {
