@@ -2,9 +2,10 @@ module com.example.javacoursework {
     requires javafx.controls;
     requires javafx.fxml;
     requires lombok;
-
-    requires org.kordamp.bootstrapfx.core;
+    requires javafx.graphics;
 
     opens com.example.javacoursework to javafx.fxml;
     exports com.example.javacoursework;
+    opens com.example.javacoursework.fxcontrollers to javafx.fxml;
+    exports com.example.javacoursework.fxcontrollers;
 }
