@@ -16,6 +16,10 @@ public class BasicUser extends User {
     protected List<Review> myReviews;
     protected List<Review> feedback;
 
+    public BasicUser(String username, String password, String name, String surname, String phoneNumber) {
+        super(username, password, name, surname, phoneNumber);
+    }
+
     public BasicUser(String username, String password, String name, String surname, String phoneNumber, String address) {
         super(username, password, name, surname, phoneNumber);
         this.address = address;

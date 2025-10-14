@@ -29,6 +29,7 @@ public class UserForm implements Initializable {
     public TextField addressField;
     public TextField usernameField;
     public AnchorPane inputFields;
+    public RadioButton adminRadio;
 
     public void goToLogin() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("username-form.fxml"));
@@ -40,9 +41,18 @@ public class UserForm implements Initializable {
     }
 
     public void disableFields() {
-        Group group = new Group();
+        //Group group = new Group();
         //group.getChildren().add();
-        if(userRadio.isSelected()){
+        if(adminRadio.isSelected())
+        {
+            phoneNumberField.setDisable(true);
+            phoneNumberField.setVisible(false);
+            addressField.setDisable(true);
+            addressField.setVisible(false);
+        }
+        else if(userRadio.isSelected()){
+            phoneNumberField.setDisable(false);
+            phoneNumberField.setVisible(true);
             addressField.setDisable(true);
             addressField.setVisible(false);
         }
