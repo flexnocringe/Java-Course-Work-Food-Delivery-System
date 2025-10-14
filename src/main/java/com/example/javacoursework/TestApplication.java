@@ -15,7 +15,7 @@ public class TestApplication extends Application {
     }
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("login-form.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("username-form.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 640, 480);
 
         primaryStage.setTitle("Login page");

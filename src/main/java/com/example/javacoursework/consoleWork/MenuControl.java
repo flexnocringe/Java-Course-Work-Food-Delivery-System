@@ -49,7 +49,7 @@ public class MenuControl {
                     System.out.println("enter username");
                     var username = scanner.nextLine();
                     for(User u : wolt.getAllSystemUsers()){
-                        if(u.getLogin().equals(username)){
+                        if(u.getUsername().equals(username)){
                             System.out.println("What to update? N/S");
                             var whatToUpdate = scanner.nextLine();
                             if(whatToUpdate.equals("N")){

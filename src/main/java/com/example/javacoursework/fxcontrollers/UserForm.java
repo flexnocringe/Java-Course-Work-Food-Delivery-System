@@ -31,7 +31,7 @@ public class UserForm implements Initializable {
     public AnchorPane inputFields;
 
     public void goToLogin() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("login-form.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("username-form.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 640, 480);
         Stage stage = (Stage) redirectToLogIn.getScene().getWindow();
         stage.setTitle("Main page");
@@ -41,7 +41,7 @@ public class UserForm implements Initializable {
 
     public void disableFields() {
         Group group = new Group();
-        group.getChildren().add();
+        //group.getChildren().add();
         if(userRadio.isSelected()){
             addressField.setDisable(true);
             addressField.setVisible(false);
