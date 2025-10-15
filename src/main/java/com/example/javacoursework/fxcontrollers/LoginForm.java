@@ -1,6 +1,8 @@
 package com.example.javacoursework.fxcontrollers;
 
 import com.example.javacoursework.TestApplication;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +19,8 @@ public class LoginForm {
     public PasswordField passwordField;
     @FXML
     public TextField usernameField;
+
+    private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("javacoursework");
 
     public void validateUser() throws IOException {
         System.out.println("username: "+usernameField.getCharacters()+" password: "+passwordField.getCharacters());
