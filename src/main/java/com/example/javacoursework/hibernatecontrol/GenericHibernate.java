@@ -1,9 +1,11 @@
 package com.example.javacoursework.hibernatecontrol;
 
+import com.example.javacoursework.fxcontrollers.FxUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaQuery;
+import javafx.scene.control.Alert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ public class GenericHibernate {
             entityManager.persist(entity);
             entityManager.getTransaction().commit();
         }catch(Exception e){
-
+            FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Something went wrong during insert operation", "Check error log");
         }finally{
             if(entityManager!=null)entityManager.close();
         }
@@ -35,13 +37,13 @@ public class GenericHibernate {
             entityManager.merge(entity);
             entityManager.getTransaction().commit();
         }catch(Exception e){
-
+            FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Something went wrong during update operation", "Check error log");
         }finally{
             if(entityManager!=null)entityManager.close();
         }
     }
 
-    public <T> T getEntityById(Class<T> entityClass, String id){
+    public <T> T getEntityById(Class<T> entityClass, int id){
         T entity = null;
         try{
             entityManager = entityManagerFactory.createEntityManager();
@@ -49,13 +51,13 @@ public class GenericHibernate {
             entity = entityManager.find(entityClass, id);
             entityManager.getTransaction().commit();
         }catch(Exception e){
-
+            FxUtils.generateDialogAlert(Alert.AlertType.WARNING, "Waring!", "Something went wrong during search for specific element", e);
         }finally{
             if(entityManager!=null)entityManager.close();
         }
         return entity;
     }
-    public <T> void delete(Class<T> entityClass, String id){
+    public <T> void delete(Class<T> entityClass, int id){
         try{
             entityManager = entityManagerFactory.createEntityManager();
             entityManager.getTransaction().begin();
@@ -63,7 +65,7 @@ public class GenericHibernate {
             entityManager.remove(entity);
             entityManager.getTransaction().commit();
         }catch(Exception e){
-
+            FxUtils.generateDialogAlert(Alert.AlertType.WARNING, "Warning!", "Something went wrong during delete operation", e);
         }finally{
             if(entityManager!=null)entityManager.close();
         }
@@ -78,9 +80,8 @@ public class GenericHibernate {
             query.select(query.from(entityClass));
             Query q = entityManager.createQuery(query);
             list = q.getResultList();
-
         }catch(Exception e){
-
+            FxUtils.generateDialogAlert(Alert.AlertType.WARNING, "Warning!", "Something went wrong during data extraction", e);
         }finally{
             if(entityManager!=null)entityManager.close();
         }

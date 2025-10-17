@@ -1,5 +1,7 @@
 package com.example.javacoursework.hibernatecontrol;
 
+import com.example.javacoursework.model.FoodOrder;
+import com.example.javacoursework.model.Restaurant;
 import com.example.javacoursework.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -7,6 +9,9 @@ import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomHibernate extends GenericHibernate {
     public CustomHibernate(EntityManagerFactory entityManagerFactory) {
@@ -31,4 +36,23 @@ public class CustomHibernate extends GenericHibernate {
         }
         return user;
     }
+
+    public List<FoodOrder> getRestaurantOrders(Restaurant restaurant){
+        List<FoodOrder> foodOrders = new ArrayList<>();
+        try{
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<FoodOrder> query = cb.createQuery(FoodOrder.class);
+            Root<FoodOrder> root = query.from(FoodOrder.class);
+
+            query.select(root).where(cb.equal(root.get("restaurant"), restaurant));
+            Query q = entityManager.createQuery(query);
+            foodOrders = q.getResultList();
+        }catch(Exception e){
+
+        }
+        return foodOrders;
+    }
 }
+

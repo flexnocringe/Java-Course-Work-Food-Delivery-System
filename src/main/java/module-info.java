@@ -8,6 +8,7 @@ module com.example.javacoursework {
     requires jakarta.persistence;
     requires org.controlsfx.controls;
     requires mysql.connector.j;
+    requires javafx.graphics;
 
     opens com.example.javacoursework to javafx.fxml, org.hibernate.orm.core, jakarta.persistence;
     exports com.example.javacoursework;

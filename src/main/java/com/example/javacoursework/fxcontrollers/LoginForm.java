@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -31,23 +32,30 @@ public class LoginForm {
         if (user != null) {
             FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("main-form.fxml"));
             Parent parent = fxmlLoader.load();
-            Scene scene = new Scene(fxmlLoader.load(), 640, 480);
+
+            MainForm mainForm = fxmlLoader.getController();
+            mainForm.setData(entityManagerFactory, user);
+
+            Scene scene = new Scene(parent);
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setTitle("Prikolas");
+            stage.setTitle("Managment Window");
             stage.setScene(scene);
             stage.show();
         } else{
-
+            FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "Something went wrong during login", "No such user or wrong credentials");
         }
     }
 
     public void goToRegisterForm() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("user-form.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 640, 480);
+        Parent parent = fxmlLoader.load();
+
         UserForm userForm = fxmlLoader.getController();
-        userForm.setData(entityManagerFactory);
+        userForm.setData(entityManagerFactory, null, false);
+
         Stage stage = new Stage();
         stage.setTitle("Create new user");
+        Scene scene = new Scene(parent);
         stage.setScene(scene);
         stage.show();
     }

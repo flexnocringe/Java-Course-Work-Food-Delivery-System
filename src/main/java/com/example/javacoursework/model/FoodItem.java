@@ -25,4 +25,6 @@ public class FoodItem {
     private List<PortionSize> portionSizes = new ArrayList<>();
     @ManyToMany(mappedBy = "foodItems", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FoodOrder> orderList = new ArrayList<>();
+    @ManyToOne
+    private Restaurant restaurant;
 }

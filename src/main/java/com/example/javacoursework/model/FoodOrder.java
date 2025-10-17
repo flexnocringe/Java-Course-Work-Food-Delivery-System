@@ -25,4 +25,6 @@ public class FoodOrder {
     private Chat chat;
     @ManyToOne
     private BasicUser buyer;
+    @ManyToOne
+    private Restaurant restaurant;
 }

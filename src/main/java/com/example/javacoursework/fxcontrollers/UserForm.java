@@ -1,15 +1,20 @@
 package com.example.javacoursework.fxcontrollers;
 
 import com.example.javacoursework.TestApplication;
+import com.example.javacoursework.hibernatecontrol.CustomHibernate;
 import com.example.javacoursework.hibernatecontrol.GenericHibernate;
+import com.example.javacoursework.model.BasicUser;
+import com.example.javacoursework.model.Restaurant;
 import com.example.javacoursework.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
@@ -47,19 +52,43 @@ public class UserForm implements Initializable {
     public AnchorPane inputFields;
     @FXML
     public RadioButton adminRadio;
+    @FXML
+    public Button updateUserButton;
 
     private EntityManagerFactory entityManagerFactory;
     private GenericHibernate genericHibernate;
-    public void setData(EntityManagerFactory entityManagerFactory) {
+    private User userForUpdate;
+    private boolean isForUpdate;
+
+    public void setData(EntityManagerFactory entityManagerFactory, User user, boolean isForUpdate) {
         this.entityManagerFactory = entityManagerFactory;
         this.genericHibernate = new GenericHibernate(entityManagerFactory);
+        this.userForUpdate = user;
+        this.isForUpdate = isForUpdate;
+        fillUserDataForUpdate();
+    }
+
+    private void fillUserDataForUpdate() {
+        if(userForUpdate != null && isForUpdate) {
+           if(userForUpdate instanceof User) {
+               usernameField.setText(userForUpdate.getUsername());
+               passwordField.setText(userForUpdate.getPassword());
+               nameField.setText(userForUpdate.getName());
+               surnameField.setText(userForUpdate.getSurname());
+               phoneNumberField.setText(userForUpdate.getPhoneNumber());
+           }
+        } else {
+            updateUserButton.setDisable(true);
+            updateUserButton.setVisible(false);
+        }
     }
 
     public void goToLogin() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("login-form.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 640, 480);
+        Parent parent = fxmlLoader.load();
+        Scene scene = new Scene(parent);
         Stage stage = (Stage) redirectToLogIn.getScene().getWindow();
-        stage.setTitle("Main page");
+        stage.setTitle("Login page");
         stage.setScene(scene);
         stage.show();
     }
@@ -95,13 +124,22 @@ public class UserForm implements Initializable {
 
     public void createNewUser() {
         if(userRadio.isSelected()) {
-//            User user = new User(usernameField.getText(), passwordField.getText(), surnameField.getText(), phoneNumberField.getText(), addressField.getText());
-//            genericHibernate.create(user);
-
-//            User testUser = genericHibernate.getEntityById(User.class, 10);
-//            System.out.println(testUser);
-
-            //genericHibernate.delete(User.class, 1);
+            BasicUser basicUser = new BasicUser(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), phoneNumberField.getText());
+            genericHibernate.create(basicUser);
+        } else if (adminRadio.isSelected()) {
+            User user = new User(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), true);
+            genericHibernate.create(user);
         }
+    }
+
+    public void updateUser() {
+        if(userForUpdate instanceof User) {
+            userForUpdate.setUsername(usernameField.getText());
+            userForUpdate.setPassword(passwordField.getText());
+            userForUpdate.setName(nameField.getText());
+            userForUpdate.setSurname(surnameField.getText());
+            userForUpdate.setPhoneNumber(phoneNumberField.getText());
+        }
+        genericHibernate.edit(userForUpdate);
     }
 }
