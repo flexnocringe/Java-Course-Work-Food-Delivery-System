@@ -47,15 +47,14 @@ public class MainForm {
     }
 
     private void setUserFormVisibility() {
-        if(currentUser instanceof User) {
-
-        } else if(currentUser instanceof BasicUser) {
-            System.out.println(currentUser.getName());
+        if(currentUser instanceof BasicUser) {
             managementTabsPane.getTabs().remove(altUserManagement);
         } else if (currentUser instanceof Restaurant) {
             managementTabsPane.getTabs().remove(altUserManagement);
         } else if (currentUser instanceof Driver) {
             managementTabsPane.getTabs().remove(altUserManagement);
+        } else if(currentUser instanceof User){
+
         }
     }
 

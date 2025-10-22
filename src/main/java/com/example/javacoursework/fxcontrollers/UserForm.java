@@ -4,6 +4,7 @@ import com.example.javacoursework.TestApplication;
 import com.example.javacoursework.hibernatecontrol.CustomHibernate;
 import com.example.javacoursework.hibernatecontrol.GenericHibernate;
 import com.example.javacoursework.model.BasicUser;
+import com.example.javacoursework.model.Driver;
 import com.example.javacoursework.model.Restaurant;
 import com.example.javacoursework.model.User;
 import jakarta.persistence.EntityManager;
@@ -129,16 +130,29 @@ public class UserForm implements Initializable {
         } else if (adminRadio.isSelected()) {
             User user = new User(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), true);
             genericHibernate.create(user);
+        } else if (restaurantRadio.isSelected()) {
+
+        } else if (driverRadio.isSelected()) {
+            
         }
     }
 
     public void updateUser() {
-        if(userForUpdate instanceof User) {
+        if(userForUpdate instanceof BasicUser) {
             userForUpdate.setUsername(usernameField.getText());
             userForUpdate.setPassword(passwordField.getText());
             userForUpdate.setName(nameField.getText());
             userForUpdate.setSurname(surnameField.getText());
             userForUpdate.setPhoneNumber(phoneNumberField.getText());
+        } else if(userForUpdate instanceof User) {
+            userForUpdate.setUsername(usernameField.getText());
+            userForUpdate.setPassword(passwordField.getText());
+            userForUpdate.setName(nameField.getText());
+            userForUpdate.setSurname(surnameField.getText());
+        } else if(userForUpdate instanceof Restaurant) {
+            
+        } else if (userForUpdate instanceof Driver) {
+            
         }
         genericHibernate.edit(userForUpdate);
     }
