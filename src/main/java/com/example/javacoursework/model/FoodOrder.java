@@ -27,4 +27,6 @@ public class FoodOrder {
     private BasicUser buyer;
     @ManyToOne
     private Restaurant restaurant;
+    @Enumerated
+    private OrderStatus orderStatus;
 }

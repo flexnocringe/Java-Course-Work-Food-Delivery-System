@@ -16,10 +16,15 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="191.0" prefWidth="282.0">
                      <children>
-                        <TableView layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="574.0">
+                        <TableView fx:id="userTable" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="574.0">
                           <columns>
-                            <TableColumn prefWidth="75.0" text="C1" />
-                            <TableColumn prefWidth="75.0" text="C2" />
+                            <TableColumn fx:id="idColumn" prefWidth="75.0" text="Id" />
+                            <TableColumn fx:id="userTypeColumn" prefWidth="75.0" text="User Type" />
+                              <TableColumn fx:id="usernameColumn" prefWidth="75.0" text="Username" />
+                              <TableColumn fx:id="passwordColumn" prefWidth="75.0" text="Password" />
+                              <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+                              <TableColumn fx:id="surnameColumn" prefWidth="75.0" text="Surname" />
+                              <TableColumn fx:id="dummyColumn" prefWidth="75.0" text="Action" />
                           </columns>
                         </TableView>
                      </children>

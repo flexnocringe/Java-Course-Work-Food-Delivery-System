@@ -4,22 +4,27 @@ import com.example.javacoursework.TestApplication;
 import com.example.javacoursework.hibernatecontrol.CustomHibernate;
 import com.example.javacoursework.model.*;
 import jakarta.persistence.EntityManagerFactory;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class MainForm {
+public class MainForm implements Initializable {
     @FXML
     public Tab userManagementTab;
     @FXML
@@ -32,6 +37,24 @@ public class MainForm {
     public ListView<User> userListView;
     @FXML
     public TabPane managementTabsPane;
+    @FXML
+    public TableColumn<User, Integer> idColumn;
+    @FXML
+    public TableView<UserTableParameters> userTable;
+    @FXML
+    public TableColumn<UserTableParameters, String> userTypeColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> usernameColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> passwordColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> nameColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> surnameColumn;
+    @FXML
+    public TableColumn dummyColumn;
+
+    private ObservableList<UserTableParameters> userObservableList = FXCollections.observableArrayList();
 
     private EntityManagerFactory entityManagerFactory;
 
@@ -39,11 +62,37 @@ public class MainForm {
 
     private User currentUser;
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        userTable.setEditable(true);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        userTypeColumn.setCellValueFactory(new PropertyValueFactory<>("userType")); //Kaip type paimt
+        usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        passwordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
+        surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        passwordColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        passwordColumn.setOnEditCommit(event -> {
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setPassword(event.getNewValue());
+            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow());
+            user.setPassword(event.getNewValue());
+            customHibernate.edit(user);
+        });
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        nameColumn.setOnEditCommit(event -> {
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
+            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow());
+            user.setPassword(event.getNewValue());
+            customHibernate.edit(user);
+        });
+
+    }
     public void setData(EntityManagerFactory entityManagerFactory, User user) {
         this.entityManagerFactory = entityManagerFactory;
         this.currentUser = user;
         setUserFormVisibility();
         this.customHibernate = new CustomHibernate(this.entityManagerFactory);
+        reloadTableData();
     }
 
     private void setUserFormVisibility() {
@@ -60,9 +109,24 @@ public class MainForm {
 
     public void reloadTableData() {
         if(userManagementTab.isSelected()){
+            List<User> users = customHibernate.getAllRecords(User.class);
+            for(User user : users){
+                UserTableParameters userTableParameters = new UserTableParameters();
+                userTableParameters.setUserType(user.getClass().getSimpleName());
+                userTableParameters.setUsername(user.getUsername());
+                userTableParameters.setPassword(user.getPassword());
+                userTableParameters.setName(user.getName());
+                userTableParameters.setSurname(user.getSurname());
+                userTableParameters.setId(user.getId());
+
+                userObservableList.add(userTableParameters);
+
+            }
+            userTable.setItems(userObservableList);
 
         } else if(ordersManagementTab.isSelected()){
             List<FoodOrder> foodOrders = getFoodOrders();
+
 
         } else if(foodManagementTab.isSelected()){
 
@@ -70,6 +134,18 @@ public class MainForm {
             List<User> userList = customHibernate.getAllRecords(User.class);
             userListView.getItems().clear();
             userListView.getItems().addAll(userList);
+        }
+    }
+
+    private Object getUserType(User user) {
+        if(user instanceof BasicUser) {
+            return (BasicUser) user;
+        } else if (user instanceof Restaurant) {
+            return (Restaurant) user;
+        } else if (user instanceof Driver) {
+            return  (Driver) user;
+        } else{
+            return (User) user;
         }
     }
 
@@ -123,5 +199,6 @@ public class MainForm {
         customHibernate.delete(User.class, selectedUser.getId());
         reloadTableData();
     }
+
     //</editor-fold>
 }
