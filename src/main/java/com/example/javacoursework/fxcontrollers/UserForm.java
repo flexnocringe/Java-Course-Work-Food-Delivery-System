@@ -3,10 +3,7 @@ package com.example.javacoursework.fxcontrollers;
 import com.example.javacoursework.TestApplication;
 import com.example.javacoursework.hibernatecontrol.CustomHibernate;
 import com.example.javacoursework.hibernatecontrol.GenericHibernate;
-import com.example.javacoursework.model.BasicUser;
-import com.example.javacoursework.model.Driver;
-import com.example.javacoursework.model.Restaurant;
-import com.example.javacoursework.model.User;
+import com.example.javacoursework.model.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import javafx.event.ActionEvent;
@@ -17,14 +14,15 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class UserForm implements Initializable {
@@ -50,11 +48,23 @@ public class UserForm implements Initializable {
     @FXML
     public TextField usernameField;
     @FXML
-    public AnchorPane inputFields;
-    @FXML
     public RadioButton adminRadio;
     @FXML
     public Button updateUserButton;
+    @FXML
+    public ComboBox<VechicleType> vechicleTypeBox;
+    @FXML
+    public TextField drivingLicenceField;
+    @FXML
+    public TextField workHoursField;
+    @FXML
+    public ToggleGroup userTypeSelecion;
+    @FXML
+    public VBox userSelection;
+    @FXML
+    public DatePicker bDateSelector;
+    @FXML
+    public Button userCreationButton;
 
     private EntityManagerFactory entityManagerFactory;
     private GenericHibernate genericHibernate;
@@ -71,7 +81,33 @@ public class UserForm implements Initializable {
 
     private void fillUserDataForUpdate() {
         if(userForUpdate != null && isForUpdate) {
-           if(userForUpdate instanceof User) {
+            userCreationButton.setDisable(true);
+            if(userForUpdate instanceof Driver) {
+               usernameField.setText(userForUpdate.getUsername());
+               passwordField.setText(userForUpdate.getPassword());
+               nameField.setText(userForUpdate.getName());
+               surnameField.setText(userForUpdate.getSurname());
+               phoneNumberField.setText(userForUpdate.getPhoneNumber());
+               addressField.setText(((Driver) userForUpdate).getAddress());
+               drivingLicenceField.setText(((Driver) userForUpdate).getDriverLicence());
+               bDateSelector.setValue(((Driver) userForUpdate).getBDate());
+               vechicleTypeBox.getSelectionModel().select(((Driver) userForUpdate).getVechicleType());
+           } else if(userForUpdate instanceof Restaurant) {
+               usernameField.setText(userForUpdate.getUsername());
+               passwordField.setText(userForUpdate.getPassword());
+               nameField.setText(userForUpdate.getName());
+               surnameField.setText(userForUpdate.getSurname());
+               phoneNumberField.setText(userForUpdate.getPhoneNumber());
+               addressField.setText(((Restaurant) userForUpdate).getAddress());
+               workHoursField.setText(((Restaurant) userForUpdate).getWorkHours());
+           } else if(userForUpdate instanceof BasicUser) {
+               usernameField.setText(userForUpdate.getUsername());
+               passwordField.setText(userForUpdate.getPassword());
+               nameField.setText(userForUpdate.getName());
+               surnameField.setText(userForUpdate.getSurname());
+               phoneNumberField.setText(userForUpdate.getPhoneNumber());
+               addressField.setText(((BasicUser) userForUpdate).getAddress());
+           } else if(userForUpdate instanceof User) {
                usernameField.setText(userForUpdate.getUsername());
                passwordField.setText(userForUpdate.getPassword());
                nameField.setText(userForUpdate.getName());
@@ -84,75 +120,115 @@ public class UserForm implements Initializable {
         }
     }
 
-    public void goToLogin() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("login-form.fxml"));
-        Parent parent = fxmlLoader.load();
-        Scene scene = new Scene(parent);
-        Stage stage = (Stage) redirectToLogIn.getScene().getWindow();
-        stage.setTitle("Login page");
-        stage.setScene(scene);
-        stage.show();
-    }
-
     public void disableFields() {
-        //Group group = new Group();
-        //group.getChildren().add();
         if(adminRadio.isSelected())
         {
-            phoneNumberField.setDisable(true);
-            phoneNumberField.setVisible(false);
             addressField.setDisable(true);
             addressField.setVisible(false);
+            workHoursField.setDisable(true);
+            workHoursField.setVisible(false);
+            drivingLicenceField.setDisable(true);
+            drivingLicenceField.setVisible(false);
+            vechicleTypeBox.setDisable(true);
+            vechicleTypeBox.setVisible(false);
+            bDateSelector.setDisable(true);
+            bDateSelector.setVisible(false);
         }
         else if(userRadio.isSelected()){
-            phoneNumberField.setDisable(false);
-            phoneNumberField.setVisible(true);
-            addressField.setDisable(true);
-            addressField.setVisible(false);
+            addressField.setDisable(false);
+            addressField.setVisible(true);
+            workHoursField.setDisable(true);
+            workHoursField.setVisible(false);
+            drivingLicenceField.setDisable(true);
+            drivingLicenceField.setVisible(false);
+            vechicleTypeBox.setDisable(true);
+            vechicleTypeBox.setVisible(false);
+            bDateSelector.setDisable(true);
+            bDateSelector.setVisible(false);
         }
-        else{
-            for(Node field : inputFields.getChildren()){
-                field.setDisable(false);
-                field.setVisible(true);
-            }
+        else if(restaurantRadio.isSelected()){
+            addressField.setDisable(false);
+            addressField.setVisible(true);
+            workHoursField.setDisable(false);
+            workHoursField.setVisible(true);
+            drivingLicenceField.setDisable(true);
+            drivingLicenceField.setVisible(false);
+            vechicleTypeBox.setDisable(true);
+            vechicleTypeBox.setVisible(false);
+            bDateSelector.setDisable(true);
+            bDateSelector.setVisible(false);
+        } else if(driverRadio.isSelected()){
+            addressField.setDisable(false);
+            addressField.setVisible(true);
+            workHoursField.setDisable(true);
+            workHoursField.setVisible(false);
+            drivingLicenceField.setDisable(false);
+            drivingLicenceField.setVisible(true);
+            vechicleTypeBox.setDisable(false);
+            vechicleTypeBox.setVisible(true);
+            bDateSelector.setDisable(false);
+            bDateSelector.setVisible(true);
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        vechicleTypeBox.getItems().addAll(VechicleType.values());
         disableFields();
     }
 
     public void createNewUser() {
         if(userRadio.isSelected()) {
-            BasicUser basicUser = new BasicUser(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), phoneNumberField.getText());
+            BasicUser basicUser = new BasicUser(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), phoneNumberField.getText(), LocalDateTime.now(), addressField.getText());
             genericHibernate.create(basicUser);
-        } else if (adminRadio.isSelected()) {
-            User user = new User(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), true);
-            genericHibernate.create(user);
         } else if (restaurantRadio.isSelected()) {
-
+            Restaurant restaurant = new Restaurant(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), phoneNumberField.getText(), LocalDateTime.now(), addressField.getText(), workHoursField.getText());
+            genericHibernate.create(restaurant);
         } else if (driverRadio.isSelected()) {
-            
+            Driver driver = new Driver(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), phoneNumberField.getText(), LocalDateTime.now(), addressField.getText(), drivingLicenceField.getText(), bDateSelector.getValue(), vechicleTypeBox.getValue());
+            genericHibernate.create(driver);
+        } else if (adminRadio.isSelected()) {
+            User user = new User(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), phoneNumberField.getText(), LocalDateTime.now(), true);
+            genericHibernate.create(user);
         }
     }
 
     public void updateUser() {
-        if(userForUpdate instanceof BasicUser) {
+        if(userForUpdate instanceof Restaurant) {
             userForUpdate.setUsername(usernameField.getText());
             userForUpdate.setPassword(passwordField.getText());
             userForUpdate.setName(nameField.getText());
             userForUpdate.setSurname(surnameField.getText());
             userForUpdate.setPhoneNumber(phoneNumberField.getText());
+            ((Restaurant) userForUpdate).setAddress(addressField.getText());
+            ((Restaurant) userForUpdate).setWorkHours(workHoursField.getText());
+            userForUpdate.setDateUpdated(LocalDateTime.now());
+        } else if (userForUpdate instanceof Driver) {
+            userForUpdate.setUsername(usernameField.getText());
+            userForUpdate.setPassword(passwordField.getText());
+            userForUpdate.setName(nameField.getText());
+            userForUpdate.setSurname(surnameField.getText());
+            userForUpdate.setPhoneNumber(phoneNumberField.getText());
+            ((Driver) userForUpdate).setAddress(addressField.getText());
+            ((Driver) userForUpdate).setDriverLicence(drivingLicenceField.getText());
+            ((Driver) userForUpdate).setVechicleType(vechicleTypeBox.getValue());
+            ((Driver) userForUpdate).setBDate(bDateSelector.getValue());
+            userForUpdate.setDateUpdated(LocalDateTime.now());
+        } else if(userForUpdate instanceof BasicUser) {
+            userForUpdate.setUsername(usernameField.getText());
+            userForUpdate.setPassword(passwordField.getText());
+            userForUpdate.setName(nameField.getText());
+            userForUpdate.setSurname(surnameField.getText());
+            userForUpdate.setPhoneNumber(phoneNumberField.getText());
+            ((BasicUser) userForUpdate).setAddress(addressField.getText());
+            userForUpdate.setDateUpdated(LocalDateTime.now());
         } else if(userForUpdate instanceof User) {
             userForUpdate.setUsername(usernameField.getText());
             userForUpdate.setPassword(passwordField.getText());
             userForUpdate.setName(nameField.getText());
             userForUpdate.setSurname(surnameField.getText());
-        } else if(userForUpdate instanceof Restaurant) {
-            
-        } else if (userForUpdate instanceof Driver) {
-            
+            userForUpdate.setPhoneNumber(phoneNumberField.getText());
+            userForUpdate.setDateUpdated(LocalDateTime.now());
         }
         genericHibernate.edit(userForUpdate);
     }

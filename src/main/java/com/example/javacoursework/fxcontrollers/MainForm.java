@@ -20,23 +20,23 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainForm implements Initializable {
     @FXML
-    public Tab userManagementTab;
-    @FXML
-    public Tab ordersManagementTab;
-    @FXML
-    public Tab foodManagementTab;
+    public TabPane managementTabsPane;
     @FXML
     public Tab altUserManagement; //uzkistukas
     @FXML
-    public ListView<User> userListView;
+    public ListView<User> userListView; // uzskistukas
+
+    //<editor-fold desc="User Table And Columns">
     @FXML
-    public TabPane managementTabsPane;
+    public Tab userManagementTab;
     @FXML
     public TableColumn<User, Integer> idColumn;
     @FXML
@@ -52,7 +52,29 @@ public class MainForm implements Initializable {
     @FXML
     public TableColumn<UserTableParameters, String> surnameColumn;
     @FXML
+    public TableColumn<UserTableParameters, String> phoneNumberColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> addressColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> drivingLicenceColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> vechicleTypeColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> dateCreatedColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> dateUpdatedColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> birthDateColumn;
+    @FXML
+    public TableColumn<UserTableParameters, String> workHoursColumn;
+    @FXML
     public TableColumn dummyColumn;
+    //</editor-fold>
+
+    @FXML
+    public Tab ordersManagementTab;
+    @FXML
+    public Tab foodManagementTab;
 
     private ObservableList<UserTableParameters> userObservableList = FXCollections.observableArrayList();
 
@@ -64,6 +86,7 @@ public class MainForm implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //<editor-fold desc="User Management Table Initialize">
         userTable.setEditable(true);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         userTypeColumn.setCellValueFactory(new PropertyValueFactory<>("userType")); //Kaip type paimt
@@ -73,7 +96,7 @@ public class MainForm implements Initializable {
         passwordColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         passwordColumn.setOnEditCommit(event -> {
             event.getTableView().getItems().get(event.getTablePosition().getRow()).setPassword(event.getNewValue());
-            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow());
+            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow()+1);
             user.setPassword(event.getNewValue());
             customHibernate.edit(user);
         });
@@ -81,49 +104,78 @@ public class MainForm implements Initializable {
         nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         nameColumn.setOnEditCommit(event -> {
             event.getTableView().getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
-            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow());
+            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow()+1);
             user.setPassword(event.getNewValue());
             customHibernate.edit(user);
         });
-
+        phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+        drivingLicenceColumn.setCellValueFactory(new PropertyValueFactory<>("license"));
+        dateCreatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
+        dateUpdatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateUpdated"));
+        birthDateColumn.setCellValueFactory(new PropertyValueFactory<>("bDate"));
+        vechicleTypeColumn.setCellValueFactory(new PropertyValueFactory<>("vechicleType"));
+        workHoursColumn.setCellValueFactory(new PropertyValueFactory<>("workHours"));
+        //</editor-fold>
     }
     public void setData(EntityManagerFactory entityManagerFactory, User user) {
         this.entityManagerFactory = entityManagerFactory;
         this.currentUser = user;
-        setUserFormVisibility();
         this.customHibernate = new CustomHibernate(this.entityManagerFactory);
+        setUserFormVisibility();
         reloadTableData();
     }
 
     private void setUserFormVisibility() {
         if(currentUser instanceof BasicUser) {
             managementTabsPane.getTabs().remove(altUserManagement);
+            managementTabsPane.getTabs().remove(userManagementTab);
         } else if (currentUser instanceof Restaurant) {
             managementTabsPane.getTabs().remove(altUserManagement);
+            managementTabsPane.getTabs().remove(userManagementTab);
         } else if (currentUser instanceof Driver) {
             managementTabsPane.getTabs().remove(altUserManagement);
+            managementTabsPane.getTabs().remove(userManagementTab);
         } else if(currentUser instanceof User){
-
+            managementTabsPane.getTabs().remove(altUserManagement);
         }
     }
 
     public void reloadTableData() {
         if(userManagementTab.isSelected()){
+            //<editor-fold desc="User Management Tab Table Reload">
+            userObservableList.clear();
             List<User> users = customHibernate.getAllRecords(User.class);
             for(User user : users){
                 UserTableParameters userTableParameters = new UserTableParameters();
-                userTableParameters.setUserType(user.getClass().getSimpleName());
-                userTableParameters.setUsername(user.getUsername());
-                userTableParameters.setPassword(user.getPassword());
-                userTableParameters.setName(user.getName());
-                userTableParameters.setSurname(user.getSurname());
-                userTableParameters.setId(user.getId());
+                if(user instanceof User) {
+                    userTableParameters.setUserType(user.getClass().getSimpleName());
+                    userTableParameters.setUsername(user.getUsername());
+                    userTableParameters.setPassword(user.getPassword());
+                    userTableParameters.setName(user.getName());
+                    userTableParameters.setSurname(user.getSurname());
+                    userTableParameters.setId(user.getId());
+                    userTableParameters.setPhoneNumber(user.getPhoneNumber());
+                    userTableParameters.setDateCreated(user.getDateCreated().toString());
+                    userTableParameters.setDateUpdated(user.getDateUpdated().toString());
+                }
+                if(user instanceof BasicUser) {
+                    userTableParameters.setAddress(((BasicUser)user).getAddress());
+                }
+                if(user instanceof Restaurant) {
+                    userTableParameters.setWorkHours(((Restaurant)user).getWorkHours());
+                }
+                if(user instanceof Driver) {
+                    userTableParameters.setbDate(String.valueOf(((Driver) user).getBDate()));
+                    userTableParameters.setLicense(((Driver) user).getDriverLicence());
+                    userTableParameters.setVechicleType(String.valueOf(((Driver) user).getVechicleType()));
+                }
 
                 userObservableList.add(userTableParameters);
 
             }
             userTable.setItems(userObservableList);
-
+            //</editor-fold>
         } else if(ordersManagementTab.isSelected()){
             List<FoodOrder> foodOrders = getFoodOrders();
 
@@ -137,18 +189,6 @@ public class MainForm implements Initializable {
         }
     }
 
-    private Object getUserType(User user) {
-        if(user instanceof BasicUser) {
-            return (BasicUser) user;
-        } else if (user instanceof Restaurant) {
-            return (Restaurant) user;
-        } else if (user instanceof Driver) {
-            return  (Driver) user;
-        } else{
-            return (User) user;
-        }
-    }
-
     private List<FoodOrder> getFoodOrders() {
         if(currentUser instanceof Restaurant) {
             return  customHibernate.getRestaurantOrders((Restaurant) currentUser);
@@ -158,7 +198,7 @@ public class MainForm implements Initializable {
     }
 
 
-    //<editor-fold desc="Alt Tab Functionality">
+    //<editor-fold desc="User Management Tab Functionality">
 
     public void addNewUser() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("user-form.fxml"));
@@ -174,16 +214,17 @@ public class MainForm implements Initializable {
         stage.setScene(scene);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
+        reloadTableData();
     }
 
     public void updateExistingUser(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("user-form.fxml"));
         Parent parent = fxmlLoader.load();
-
-        User selectedUser = userListView.getSelectionModel().getSelectedItem();
-
         UserForm userForm = fxmlLoader.getController();
-        userForm.setData(entityManagerFactory, selectedUser, true);
+        
+        UserTableParameters selectedUser = userTable.getSelectionModel().getSelectedItem();
+
+        userForm.setData(entityManagerFactory, convertUserTableParamsToUserClass(selectedUser), true);
 
         Stage stage = new Stage();
         stage.setTitle("Create new user");
@@ -192,6 +233,18 @@ public class MainForm implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
         reloadTableData();
+    }
+
+    private User convertUserTableParamsToUserClass(UserTableParameters selectedUser) {
+        if(selectedUser.getUserType().equals("Driver")) {
+            return new Driver(selectedUser.getUsername(), selectedUser.getPassword(), selectedUser.getName(), selectedUser.getSurname(), selectedUser.getPhoneNumber(), LocalDateTime.parse(selectedUser.getDateCreated()), selectedUser.getAddress(), selectedUser.getLicense(), LocalDate.parse(selectedUser.getbDate()), VechicleType.valueOf(selectedUser.getVechicleType()));
+        } else if (selectedUser.getUserType().equals("Restaurant")) {
+            return new Restaurant(selectedUser.getUsername(), selectedUser.getPassword(), selectedUser.getName(), selectedUser.getSurname(), selectedUser.getPhoneNumber(), LocalDateTime.parse(selectedUser.getDateCreated()), selectedUser.getAddress(), selectedUser.getWorkHours());
+        } else if(selectedUser.getUserType().equals("BasicUser")) {
+            return new BasicUser(selectedUser.getUsername(), selectedUser.getPassword(), selectedUser.getName(), selectedUser.getSurname(), selectedUser.getPhoneNumber(), LocalDateTime.parse(selectedUser.getDateCreated()), selectedUser.getAddress());
+        } else {
+            return new User(selectedUser.getUsername(), selectedUser.getPassword(), selectedUser.getName(), selectedUser.getSurname(), selectedUser.getPhoneNumber(), LocalDateTime.parse(selectedUser.getDateCreated()));
+        }
     }
 
     public void deleteSelectedUser(ActionEvent actionEvent) {

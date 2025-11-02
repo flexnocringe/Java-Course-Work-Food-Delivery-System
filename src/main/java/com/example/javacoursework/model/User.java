@@ -29,23 +29,25 @@ public class User implements Serializable {
     protected LocalDateTime dateUpdated;
     protected boolean isAdmin;
 
-    public User(String username, String password, String name, String surname, boolean isAdmin) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.isAdmin = isAdmin;
-    }
-
-    public User(int id, String username, String password, String name, String surname, String phoneNumber, LocalDateTime dateCreated, LocalDateTime dateUpdated) {
-        this.id = id;
+    public User(String username, String password, String name, String surname, String phoneNumber, LocalDateTime dateCreated, boolean isAdmin) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.dateCreated = dateCreated;
-        this.dateUpdated = dateUpdated;
+        this.dateUpdated = dateCreated;
+        this.isAdmin = isAdmin;
+    }
+
+    public User(String username, String password, String name, String surname, String phoneNumber, LocalDateTime dateCreated) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+        this.phoneNumber = phoneNumber;
+        this.dateCreated = dateCreated;
+        this.dateUpdated = dateCreated;
     }
 
     public User(int id, String username, String password, String name, String surname, String phoneNumber) {

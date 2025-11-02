@@ -28,15 +28,14 @@ public class BasicUser extends User {
         super(username, password, name, surname, phoneNumber);
     }
 
+    public BasicUser(String username, String password, String name, String surname, String phoneNumber, LocalDateTime dateCreated, String address) {
+        super(username, password, name, surname, phoneNumber, dateCreated);
+        this.address = address;
+    }
+
     public BasicUser(String username, String password, String name, String surname, String phoneNumber, String address) {
         super(username, password, name, surname, phoneNumber);
         this.address = address;
     }
 
-    public BasicUser(String username, String password, String name, String surname, String phoneNumber, List<FoodOrder> myOrders, List<Review> myReviews, List<Review> feedback) {
-        super(username, password, name, surname, phoneNumber);
-        this.myOrders = myOrders;
-        this.myReviews = myReviews;
-        this.feedback = feedback;
-    }
 }

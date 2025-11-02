@@ -7,26 +7,42 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javacoursework.fxcontrollers.MainForm">
+<AnchorPane prefHeight="531.0" prefWidth="1374.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javacoursework.fxcontrollers.MainForm">
    <children>
-      <TabPane fx:id="managementTabsPane" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TabPane fx:id="managementTabsPane" prefHeight="531.0" prefWidth="1113.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
           <Tab fx:id="userManagementTab" onSelectionChanged="#reloadTableData" text="User management">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="191.0" prefWidth="282.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="502.0" prefWidth="1188.0">
                      <children>
-                        <TableView fx:id="userTable" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="574.0">
+                        <TableView fx:id="userTable" layoutX="14.0" layoutY="14.0" prefHeight="244.0" prefWidth="1220.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
                           <columns>
-                            <TableColumn fx:id="idColumn" prefWidth="75.0" text="Id" />
-                            <TableColumn fx:id="userTypeColumn" prefWidth="75.0" text="User Type" />
-                              <TableColumn fx:id="usernameColumn" prefWidth="75.0" text="Username" />
-                              <TableColumn fx:id="passwordColumn" prefWidth="75.0" text="Password" />
-                              <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
-                              <TableColumn fx:id="surnameColumn" prefWidth="75.0" text="Surname" />
-                              <TableColumn fx:id="dummyColumn" prefWidth="75.0" text="Action" />
+                            <TableColumn fx:id="idColumn" prefWidth="28.0" text="Id" />
+                            <TableColumn fx:id="userTypeColumn" prefWidth="82.0" text="User Type" />
+                              <TableColumn fx:id="usernameColumn" prefWidth="93.0" text="Username" />
+                              <TableColumn fx:id="passwordColumn" prefWidth="87.0" text="Password" />
+                              <TableColumn fx:id="nameColumn" prefWidth="77.0" text="Name" />
+                              <TableColumn fx:id="surnameColumn" prefWidth="83.0" text="Surname" />
+                              <TableColumn fx:id="phoneNumberColumn" prefWidth="104.0" text="Phone Number" />
+                              <TableColumn fx:id="addressColumn" prefWidth="120.0" text="Address" />
+                              <TableColumn fx:id="workHoursColumn" prefWidth="107.0" text="Work Hours" />
+                              <TableColumn fx:id="birthDateColumn" prefWidth="93.0" text="Birth Date" />
+                              <TableColumn fx:id="drivingLicenceColumn" prefWidth="105.0" text="Driving Licence" />
+                              <TableColumn fx:id="vechicleTypeColumn" prefWidth="111.0" text="Vechicle Type" />
+                              <TableColumn fx:id="dateCreatedColumn" prefWidth="87.0" text="Date Created" />
+                              <TableColumn fx:id="dateUpdatedColumn" prefWidth="95.0" text="Date Updated" />
+                              <TableColumn fx:id="dummyColumn" prefWidth="71.0" text="Action" />
                           </columns>
                         </TableView>
+                        <HBox alignment="TOP_CENTER" layoutX="77.0" layoutY="332.0" spacing="40.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#addNewUser" text="Add new user" />
+                              <Button mnemonicParsing="false" onAction="#updateExistingUser" text="Update user" />
+                              <Button mnemonicParsing="false" onAction="#deleteSelectedUser" text="Delete user" />
+                           </children>
+                        </HBox>
                      </children>
                   </AnchorPane>
             </content>

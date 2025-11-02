@@ -23,6 +23,12 @@ public class Driver extends BasicUser {
     @Enumerated(EnumType.STRING)
     private VechicleType vechicleType;
 
+    public Driver(String username, String password, String name, String surname, String phoneNumber, LocalDateTime dateCreated, String address, String driverLicence, LocalDate bDate, VechicleType vechicleType) {
+        super(username, password, name, surname, phoneNumber, dateCreated, address);
+        this.driverLicence = driverLicence;
+        this.bDate = bDate;
+        this.vechicleType = vechicleType;
+    }
 
     public Driver(String username, String password, String name, String surname, String phoneNumber, String address, String driverLicence, LocalDate bDate, VechicleType vechicleType) {
         super(username, password, name, surname, phoneNumber, address);

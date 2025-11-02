@@ -13,7 +13,12 @@ public class UserTableParameters {
     private SimpleStringProperty password = new  SimpleStringProperty();
     private SimpleStringProperty address = new  SimpleStringProperty();
     private SimpleStringProperty phoneNumber = new  SimpleStringProperty();
+    private SimpleStringProperty dateCreated = new SimpleStringProperty();
+    private SimpleStringProperty dateUpdated = new SimpleStringProperty();
+    private SimpleStringProperty bDate = new  SimpleStringProperty();
+    private SimpleStringProperty workHours = new SimpleStringProperty();
     private SimpleStringProperty license = new  SimpleStringProperty();
+    private SimpleStringProperty vechicleType = new SimpleStringProperty();
     private SimpleStringProperty userType = new  SimpleStringProperty();
 
     public void setId(int id) {
@@ -122,5 +127,65 @@ public class UserTableParameters {
 
     public SimpleStringProperty userTypeProperty() {
         return userType;
+    }
+
+    public String getVechicleType() {
+        return vechicleType.get();
+    }
+
+    public SimpleStringProperty vechicleTypeProperty() {
+        return vechicleType;
+    }
+
+    public void setVechicleType(String vechicleType) {
+        this.vechicleType.set(vechicleType);
+    }
+
+    public String getDateCreated() {
+        return dateCreated.get();
+    }
+
+    public SimpleStringProperty dateCreatedProperty() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated.set(dateCreated);
+    }
+
+    public String getDateUpdated() {
+        return dateUpdated.get();
+    }
+
+    public SimpleStringProperty dateUpdatedProperty() {
+        return dateUpdated;
+    }
+
+    public void setDateUpdated(String dateUpdated) {
+        this.dateUpdated.set(dateUpdated);
+    }
+
+    public String getbDate() {
+        return bDate.get();
+    }
+
+    public SimpleStringProperty bDateProperty() {
+        return bDate;
+    }
+
+    public void setbDate(String bDate) {
+        this.bDate.set(bDate);
+    }
+
+    public String getWorkHours() {
+        return workHours.get();
+    }
+
+    public SimpleStringProperty workHoursProperty() {
+        return workHours;
+    }
+
+    public void setWorkHours(String workHours) {
+        this.workHours.set(workHours);
     }
 }
