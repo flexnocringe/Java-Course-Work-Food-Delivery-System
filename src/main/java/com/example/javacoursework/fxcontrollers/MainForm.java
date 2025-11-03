@@ -34,7 +34,7 @@ public class MainForm implements Initializable {
     @FXML
     public ListView<User> userListView; // uzskistukas
 
-    //<editor-fold desc="User Table And Columns">
+    //<editor-fold desc="User Tab, Table And Columns">
     @FXML
     public Tab userManagementTab;
     @FXML
@@ -72,11 +72,37 @@ public class MainForm implements Initializable {
     //</editor-fold>
 
     @FXML
-    public Tab ordersManagementTab;
-    @FXML
     public Tab foodManagementTab;
 
+    //<editor-fold desc="FoodOrder Tab, Table And Columns">
+    @FXML
+    public Tab ordersManagementTab;
+    @FXML
+    public TableView<FoodOrder> foodOrderTable;
+    @FXML
+    public TableColumn<FoodOrder, String> foodOrderIdColumn;
+    public TableColumn<FoodOrder, String> foodOrderNameColumn;
+    @FXML
+    public TableColumn<FoodOrder, String> foodOrderRestaurantColumn;
+    @FXML
+    public TableColumn<FoodOrder, String> foodOrderPriceColumn;
+    @FXML
+    public TableColumn<FoodOrder, String> foodOrderStatusColumn;
+    @FXML
+    public TextField orderNameField;
+    @FXML
+    public TextField orderPriceField;
+    @FXML
+    public ComboBox<Restaurant> restaurantOrderBox;
+    @FXML
+    public ComboBox<BasicUser> clientOrderBox;
+    @FXML
+    public ComboBox<OrderStatus> statusOrderBox;
+    //</editor-fold>
+
+
     private ObservableList<UserTableParameters> userObservableList = FXCollections.observableArrayList();
+    private ObservableList<FoodOrder> foodOrderObservableList = FXCollections.observableArrayList();
 
     private EntityManagerFactory entityManagerFactory;
 
@@ -86,18 +112,19 @@ public class MainForm implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         //<editor-fold desc="User Management Table Initialize">
         userTable.setEditable(true);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         userTypeColumn.setCellValueFactory(new PropertyValueFactory<>("userType")); //Kaip type paimt
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         passwordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
-        surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
         passwordColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         passwordColumn.setOnEditCommit(event -> {
             event.getTableView().getItems().get(event.getTablePosition().getRow()).setPassword(event.getNewValue());
             User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow()+1);
             user.setPassword(event.getNewValue());
+            user.setDateUpdated(LocalDateTime.now());
             customHibernate.edit(user);
         });
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -106,9 +133,27 @@ public class MainForm implements Initializable {
             event.getTableView().getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
             User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow()+1);
             user.setPassword(event.getNewValue());
+            user.setDateUpdated(LocalDateTime.now());
+            customHibernate.edit(user);
+        });
+        surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        surnameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        surnameColumn.setOnEditCommit(event -> {
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
+            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow()+1);
+            user.setSurname(event.getNewValue());
+            user.setDateUpdated(LocalDateTime.now());
             customHibernate.edit(user);
         });
         phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+        phoneNumberColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        phoneNumberColumn.setOnEditCommit(event -> {
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
+            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow()+1);
+            user.setPhoneNumber(event.getNewValue());
+            user.setDateUpdated(LocalDateTime.now());
+            customHibernate.edit(user);
+        });
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
         drivingLicenceColumn.setCellValueFactory(new PropertyValueFactory<>("license"));
         dateCreatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
@@ -117,6 +162,17 @@ public class MainForm implements Initializable {
         vechicleTypeColumn.setCellValueFactory(new PropertyValueFactory<>("vechicleType"));
         workHoursColumn.setCellValueFactory(new PropertyValueFactory<>("workHours"));
         //</editor-fold>
+
+        //<editor-fold desc="Food Order Management Table Initialize">
+        statusOrderBox.getItems().addAll(OrderStatus.values());
+        foodOrderTable.setEditable(true);
+        foodOrderIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        foodOrderNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        foodOrderRestaurantColumn.setCellValueFactory(new PropertyValueFactory<>("restaurant"));
+        foodOrderStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        foodOrderPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        //</editor-fold>
+
     }
     public void setData(EntityManagerFactory entityManagerFactory, User user) {
         this.entityManagerFactory = entityManagerFactory;
@@ -143,6 +199,7 @@ public class MainForm implements Initializable {
 
     public void reloadTableData() {
         if(userManagementTab.isSelected()){
+
             //<editor-fold desc="User Management Tab Table Reload">
             userObservableList.clear();
             List<User> users = customHibernate.getAllRecords(User.class);
@@ -176,7 +233,11 @@ public class MainForm implements Initializable {
             }
             userTable.setItems(userObservableList);
             //</editor-fold>
+
         } else if(ordersManagementTab.isSelected()){
+            clearOrderInputFields();
+            restaurantOrderBox.getItems().addAll(customHibernate.getAllRecords(Restaurant.class));
+            clientOrderBox.getItems().addAll(customHibernate.getOnlyBasicUsers());
             List<FoodOrder> foodOrders = getFoodOrders();
 
 
@@ -189,6 +250,14 @@ public class MainForm implements Initializable {
         }
     }
 
+    private void clearOrderInputFields() {
+        orderNameField.clear();
+        orderPriceField.clear();
+        restaurantOrderBox.setValue(null);
+        clientOrderBox.setValue(null);
+        statusOrderBox.setValue(null);
+    }
+
     private List<FoodOrder> getFoodOrders() {
         if(currentUser instanceof Restaurant) {
             return  customHibernate.getRestaurantOrders((Restaurant) currentUser);
@@ -196,7 +265,6 @@ public class MainForm implements Initializable {
             return customHibernate.getAllRecords(FoodOrder.class);
         }
     }
-
 
     //<editor-fold desc="User Management Tab Functionality">
 
@@ -248,10 +316,32 @@ public class MainForm implements Initializable {
     }
 
     public void deleteSelectedUser(ActionEvent actionEvent) {
-        User selectedUser = userListView.getSelectionModel().getSelectedItem();
+        UserTableParameters selectedUser = userTable.getSelectionModel().getSelectedItem();
         customHibernate.delete(User.class, selectedUser.getId());
         reloadTableData();
     }
-
     //</editor-fold>
+
+    public static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    public void createOrder(ActionEvent actionEvent) {
+        if(isNumeric(orderPriceField.getText())) {
+            List<FoodItem> dummyList = new ArrayList<>();
+            FoodOrder foodOrder = new FoodOrder(orderNameField.getText(), Double.parseDouble(orderPriceField.getText()), dummyList, clientOrderBox.getValue(), restaurantOrderBox.getValue(), statusOrderBox.getValue(), LocalDateTime.now());
+            customHibernate.create(foodOrder);
+            reloadTableData();
+        }
+    }
+
+    public void updateOrder(ActionEvent actionEvent) {
+    }
+
+    public void deleteOrder(ActionEvent actionEvent) {
+    }
 }

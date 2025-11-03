@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="531.0" prefWidth="1374.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javacoursework.fxcontrollers.MainForm">
    <children>
@@ -49,7 +52,30 @@
           </Tab>
           <Tab fx:id="ordersManagementTab" onSelectionChanged="#reloadTableData" text="Orders management">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="foodOrderTable" layoutX="14.0" layoutY="80.0" prefHeight="311.0" prefWidth="318.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="90.0">
+                          <columns>
+                            <TableColumn fx:id="foodOrderIdColumn" prefWidth="24.666686058044434" text="id" />
+                            <TableColumn fx:id="foodOrderNameColumn" prefWidth="60.000003814697266" text="name" />
+                              <TableColumn fx:id="foodOrderRestaurantColumn" prefWidth="81.33330535888672" text="restaurant" />
+                              <TableColumn fx:id="foodOrderStatusColumn" prefWidth="75.0" text="status" />
+                              <TableColumn fx:id="foodOrderPriceColumn" prefWidth="75.0" text="price" />
+                          </columns>
+                        </TableView>
+                        <VBox layoutX="342.0" layoutY="90.0" prefHeight="310.0" prefWidth="150.0" spacing="15.0">
+                           <children>
+                              <TextField fx:id="orderNameField" promptText="order name" />
+                              <TextField fx:id="orderPriceField" promptText="price" />
+                              <ComboBox fx:id="restaurantOrderBox" prefWidth="150.0" promptText="restaurant" />
+                              <ComboBox fx:id="clientOrderBox" prefWidth="150.0" promptText="client" />
+                              <ComboBox fx:id="statusOrderBox" prefWidth="150.0" promptText="status" />
+                              <Button mnemonicParsing="false" onAction="#createOrder" prefWidth="149.0" text="Create Order" />
+                              <Button mnemonicParsing="false" onAction="#updateOrder" prefHeight="25.0" prefWidth="160.0" text="Update Order" />
+                              <Button mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0" prefWidth="161.0" text="Delete Order" />
+                           </children>
+                        </VBox>
+                     </children></AnchorPane>
             </content>
           </Tab>
             <Tab fx:id="foodManagementTab" onSelectionChanged="#reloadTableData" text="Food management">

@@ -1,14 +1,15 @@
 package com.example.javacoursework.hibernatecontrol;
 
-import com.example.javacoursework.model.FoodOrder;
-import com.example.javacoursework.model.Restaurant;
-import com.example.javacoursework.model.User;
+import com.example.javacoursework.fxcontrollers.FxUtils;
+import com.example.javacoursework.model.*;
+import jakarta.persistence.Basic;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import javafx.scene.control.Alert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,16 @@ public class CustomHibernate extends GenericHibernate {
 
         }
         return foodOrders;
+    }
+
+    public List<BasicUser> getOnlyBasicUsers(){
+        List<BasicUser> basicUsers = new ArrayList<>();
+        for(BasicUser user : getAllRecords(BasicUser.class)){
+            if(!(user instanceof Restaurant) && !(user instanceof Driver)){
+                basicUsers.add(user);
+            }
+        }
+        return basicUsers;
     }
 }
 
