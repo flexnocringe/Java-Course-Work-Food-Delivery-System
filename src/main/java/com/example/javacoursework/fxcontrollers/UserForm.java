@@ -259,5 +259,7 @@ public class UserForm implements Initializable {
             userForUpdate.setDateUpdated(LocalDateTime.now());
         }
         genericHibernate.edit(userForUpdate);
+        Stage stage = (Stage) userCreationButton.getScene().getWindow();
+        stage.close();
     }
 }

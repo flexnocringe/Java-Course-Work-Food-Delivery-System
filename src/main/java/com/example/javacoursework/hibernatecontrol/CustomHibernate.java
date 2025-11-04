@@ -31,6 +31,8 @@ public class CustomHibernate extends GenericHibernate {
             user = (User) q.getSingleResult();
         }catch(Exception e){
 
+        }finally{
+            if(entityManager!=null)entityManager.close();
         }
         return user;
     }
@@ -48,6 +50,8 @@ public class CustomHibernate extends GenericHibernate {
             foodOrders = q.getResultList();
         }catch(Exception e){
             FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Problem occurred when retrieving Restaurant Orders", "Check error log");
+        }finally{
+            if(entityManager!=null)entityManager.close();
         }
         return foodOrders;
     }
@@ -74,6 +78,8 @@ public class CustomHibernate extends GenericHibernate {
                 menu = q.getResultList();
             } catch (Exception e) {
                 FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Problem occurred when retrieving Restaurant Menu", "Check error log");
+            }finally{
+                if(entityManager!=null)entityManager.close();
             }
             return menu;
     }
@@ -91,6 +97,8 @@ public class CustomHibernate extends GenericHibernate {
             foodOrders = q.getResultList();
         }catch(Exception e){
             FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Problem occurred when retrieving Restaurant Orders", "Check error log");
+        }finally{
+            if(entityManager!=null)entityManager.close();
         }
         return foodOrders;
     }

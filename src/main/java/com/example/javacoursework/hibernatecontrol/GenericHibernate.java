@@ -6,9 +6,11 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaQuery;
 import javafx.scene.control.Alert;
+import org.hibernate.PersistentObjectException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GenericHibernate {
     protected EntityManagerFactory entityManagerFactory;
@@ -25,7 +27,9 @@ public class GenericHibernate {
             entityManager.persist(entity);
             entityManager.getTransaction().commit();
         }catch(Exception e){
-            FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Something went wrong during insert operation", "Check error log");
+            if(!Objects.equals(e.getMessage(), "detached entity passed to persist: com.example.javacoursework.model.FoodOrder")){
+                FxUtils.generateDialogAlert(Alert.AlertType.WARNING, "Warning!", "Something went wrong during insert operation", e);
+            }
         }finally{
             if(entityManager!=null)entityManager.close();
         }
@@ -37,7 +41,7 @@ public class GenericHibernate {
             entityManager.merge(entity);
             entityManager.getTransaction().commit();
         }catch(Exception e){
-            FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Something went wrong during update operation", "Check error log");
+            FxUtils.generateDialogAlert(Alert.AlertType.WARNING, "Warning!", "Something went wrong during update operation", e);
         }finally{
             if(entityManager!=null)entityManager.close();
         }

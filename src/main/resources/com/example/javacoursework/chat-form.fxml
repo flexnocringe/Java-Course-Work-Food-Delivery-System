@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="376.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javacoursework.fxcontrollers.ChatForm">
+   <children>
+      <ListView fx:id="chatMessageListView" layoutX="14.0" layoutY="14.0" prefHeight="235.0" prefWidth="346.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
+      <TextArea fx:id="chatMessageTextField" layoutX="15.0" layoutY="260.0" prefHeight="87.0" prefWidth="346.0" promptText="Message Text" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+      <Button layoutX="162.0" layoutY="355.0" mnemonicParsing="false" onAction="#sendMessage" text="Send" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+   </children>
+</AnchorPane>

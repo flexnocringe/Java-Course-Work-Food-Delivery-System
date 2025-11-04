@@ -27,9 +27,15 @@ public class Review {
     @ManyToOne
     private Chat chat;
 
-    public Review(String text, LocalDateTime dateCreated, BasicUser reviewOwner) {
+    public Review(String text, LocalDateTime dateCreated, BasicUser reviewOwner, Chat chat) {
         this.text = text;
         this.dateCreated = dateCreated;
         this.reviewOwner = reviewOwner;
+        this.chat = chat;
+    }
+
+    @Override
+    public String toString() {
+        return reviewOwner + " says:\n" + text + "\n| " + dateCreated+" |";
     }
 }

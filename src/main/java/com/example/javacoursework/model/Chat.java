@@ -19,15 +19,15 @@ public class Chat {
     private String name;
     private String chatText;
     private LocalDate dateCreated;
-    @OneToOne(mappedBy ="chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy ="chat", cascade = CascadeType.ALL)
     private FoodOrder foodOrder;
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Review> messages = new ArrayList<>();
 
-    public Chat(String name, LocalDate dateCreated, FoodOrder foodOrder, List<Review> messages) {
+    public Chat(String name, LocalDate dateCreated, FoodOrder foodOrder) {
         this.name = name;
         this.dateCreated = dateCreated;
         this.foodOrder = foodOrder;
-        this.messages = messages;
+        this.messages = new ArrayList<>();
     }
 }

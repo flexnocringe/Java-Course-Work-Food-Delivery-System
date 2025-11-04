@@ -139,6 +139,8 @@ public class MainForm implements Initializable {
     public Button updateOrderButton;
     @FXML
     public Button deleteOrderButton;
+    @FXML
+    public Button orderChatButton;
     //</editor-fold>
 
     private ObservableList<UserTableParameters> userObservableList = FXCollections.observableArrayList();
@@ -205,6 +207,7 @@ public class MainForm implements Initializable {
         //</editor-fold>
 
         //<editor-fold desc="Food Order Management Table Initialize">
+        orderChatButton.setDisable(true);
         statusOrderBox.getItems().addAll(OrderStatus.values());
         foodItemForOrderListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         foodOrderTable.setEditable(true);
@@ -306,8 +309,10 @@ public class MainForm implements Initializable {
             foodOrderTable.setItems(foodOrderObservableList);
             if(currentUser instanceof Restaurant) {
                 restaurantOrderBox.setValue((Restaurant)currentUser);
+                loadRestaurantMenuForOrder();
                 restaurantOrderBox.setDisable(true);
                 restaurantOrderBox.setVisible(false);
+                orderChatButton.setDisable(false);
             } else if(currentUser instanceof BasicUser) {
                 clientOrderBox.setValue((BasicUser)currentUser);
                 clientOrderBox.setDisable(true);
@@ -315,6 +320,7 @@ public class MainForm implements Initializable {
                 statusOrderBox.setDisable(true);
                 statusOrderBox.getSelectionModel().select(OrderStatus.PENDING);
                 deleteOrderButton.setDisable(true);
+                orderChatButton.setDisable(false);
             }
             //</editor-fold>
 
@@ -361,7 +367,7 @@ public class MainForm implements Initializable {
         Parent parent = fxmlLoader.load();
         UserForm userForm = fxmlLoader.getController();
         UserTableParameters selectedUser = userTable.getSelectionModel().getSelectedItem();
-        userForm.setData(entityManagerFactory, convertUserTableParamsToUserClass(selectedUser), true);
+        userForm.setData(entityManagerFactory, customHibernate.getEntityById(User.class, selectedUser.getId()), true);
         Stage stage = new Stage();
         stage.setTitle("Create new user");
         Scene scene = new Scene(parent);
@@ -371,18 +377,6 @@ public class MainForm implements Initializable {
         reloadTableData();
         } catch (NullPointerException e) {
             FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You have not chosen a User To Update!", "Please choose a User to proceed");
-        }
-    }
-
-    private User convertUserTableParamsToUserClass(UserTableParameters selectedUser) {
-        if(selectedUser.getUserType().equals("Driver")) {
-            return new Driver(selectedUser.getUsername(), selectedUser.getPassword(), selectedUser.getName(), selectedUser.getSurname(), selectedUser.getPhoneNumber(), LocalDateTime.parse(selectedUser.getDateCreated()), selectedUser.getAddress(), selectedUser.getLicense(), LocalDate.parse(selectedUser.getbDate()), VechicleType.valueOf(selectedUser.getVechicleType()));
-        } else if (selectedUser.getUserType().equals("Restaurant")) {
-            return new Restaurant(selectedUser.getUsername(), selectedUser.getPassword(), selectedUser.getName(), selectedUser.getSurname(), selectedUser.getPhoneNumber(), LocalDateTime.parse(selectedUser.getDateCreated()), selectedUser.getAddress(), selectedUser.getWorkHours());
-        } else if(selectedUser.getUserType().equals("BasicUser")) {
-            return new BasicUser(selectedUser.getUsername(), selectedUser.getPassword(), selectedUser.getName(), selectedUser.getSurname(), selectedUser.getPhoneNumber(), LocalDateTime.parse(selectedUser.getDateCreated()), selectedUser.getAddress());
-        } else {
-            return new User(selectedUser.getUsername(), selectedUser.getPassword(), selectedUser.getName(), selectedUser.getSurname(), selectedUser.getPhoneNumber(), LocalDateTime.parse(selectedUser.getDateCreated()));
         }
     }
 
@@ -601,6 +595,20 @@ public class MainForm implements Initializable {
             orderPriceField.setDisable(false);
         }
         createOrderButton.setDisable(true);
+    }
+
+    public void loadChatForm(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("chat-form.fxml"));
+        Parent parent = fxmlLoader.load();
+        ChatForm chatForm = fxmlLoader.getController();
+        chatForm.setData(entityManagerFactory, currentUser, foodOrderTable.getSelectionModel().getSelectedItem());
+        Stage stage = new Stage();
+        stage.setTitle("Order Chat");
+        Scene scene = new Scene(parent);
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+        reloadTableData();
     }
     //</editor-fold>
 }
