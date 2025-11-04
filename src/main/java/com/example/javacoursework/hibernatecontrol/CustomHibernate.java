@@ -2,8 +2,6 @@ package com.example.javacoursework.hibernatecontrol;
 
 import com.example.javacoursework.fxcontrollers.FxUtils;
 import com.example.javacoursework.model.*;
-import jakarta.persistence.Basic;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -28,7 +26,6 @@ public class CustomHibernate extends GenericHibernate {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<User> query = cb.createQuery(User.class);
             Root<User> root = query.from(User.class);
-
             query.select(root).where(cb.and(cb.equal(root.get("username"), username), cb.equal(root.get("password"), password)));
             Query q = entityManager.createQuery(query);
             user = (User) q.getSingleResult();
@@ -46,7 +43,6 @@ public class CustomHibernate extends GenericHibernate {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<FoodOrder> query = cb.createQuery(FoodOrder.class);
             Root<FoodOrder> root = query.from(FoodOrder.class);
-
             query.select(root).where(cb.equal(root.get("restaurant"), restaurant));
             Query q = entityManager.createQuery(query);
             foodOrders = q.getResultList();
@@ -80,6 +76,23 @@ public class CustomHibernate extends GenericHibernate {
                 FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Problem occurred when retrieving Restaurant Menu", "Check error log");
             }
             return menu;
+    }
+
+    public List<FoodOrder> getBuyerOrders(BasicUser buyer) {
+        List<FoodOrder> foodOrders = new ArrayList<>();
+        try{
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<FoodOrder> query = cb.createQuery(FoodOrder.class);
+            Root<FoodOrder> root = query.from(FoodOrder.class);
+            query.select(root).where(cb.equal(root.get("buyer"), buyer));
+            Query q = entityManager.createQuery(query);
+            foodOrders = q.getResultList();
+        }catch(Exception e){
+            FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Problem occurred when retrieving Restaurant Orders", "Check error log");
+        }
+        return foodOrders;
     }
 }
 

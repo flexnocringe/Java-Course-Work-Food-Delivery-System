@@ -57,7 +57,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="foodOrderTable" layoutX="14.0" layoutY="80.0" onMouseClicked="#loadOrderForUpdate" prefHeight="311.0" prefWidth="484.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="90.0">
+                        <TableView fx:id="foodOrderTable" layoutX="14.0" layoutY="80.0" onMouseClicked="#loadOrderForUpdate" prefHeight="271.0" prefWidth="484.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="90.0">
                           <columns>
                             <TableColumn fx:id="foodOrderIdColumn" prefWidth="24.666686058044434" text="id" />
                             <TableColumn fx:id="foodOrderNameColumn" prefWidth="94.0" text="name" />
@@ -75,13 +75,14 @@
                               <ComboBox fx:id="clientOrderBox" prefWidth="150.0" promptText="client" />
                               <ComboBox fx:id="statusOrderBox" prefWidth="150.0" promptText="status" />
                               <Button fx:id="createOrderButton" mnemonicParsing="false" onAction="#createOrder" prefWidth="149.0" text="Create Order" />
-                              <Button mnemonicParsing="false" onAction="#updateOrder" prefHeight="25.0" prefWidth="160.0" text="Update Order" />
-                              <Button mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0" prefWidth="161.0" text="Delete Order" />
+                              <Button fx:id="updateOrderButton" mnemonicParsing="false" onAction="#updateOrder" prefHeight="25.0" prefWidth="160.0" text="Update Order" />
+                              <Button fx:id="deleteOrderButton" mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0" prefWidth="161.0" text="Delete Order" />
                            </children>
                         </VBox>
                         <ListView fx:id="foodItemForOrderListView" layoutX="696.0" layoutY="147.0" prefHeight="249.0" prefWidth="563.0" />
                         <Text layoutX="696.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Food Items" />
                         <Button layoutX="696.0" layoutY="90.0" mnemonicParsing="false" onAction="#clearOrderInputFields" text="Clear Input Fields" />
+                        <Button layoutX="14.0" layoutY="376.0" mnemonicParsing="false" onAction="#loadChatForm" prefHeight="25.0" prefWidth="484.0" text="View Order Chat" AnchorPane.leftAnchor="10.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -102,8 +103,8 @@
                         <TextArea fx:id="foodItemIngridientsField" layoutX="498.0" layoutY="157.0" prefHeight="194.0" prefWidth="211.0" promptText="ingredients" />
                         <TextField fx:id="foodItemPriceField" layoutX="500.0" layoutY="113.0" prefHeight="25.0" prefWidth="210.0" promptText="price" />
                         <Text layoutX="20.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Food Items:" />
-                        <ListView fx:id="allergensListView" layoutX="729.0" layoutY="79.0" prefHeight="233.0" prefWidth="200.0" />
-                        <Text layoutX="729.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Allergens:" />
+                        <ListView fx:id="allergensListView" layoutX="729.0" layoutY="114.0" prefHeight="207.0" prefWidth="200.0" />
+                        <Text layoutX="729.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Allergens:" />
                         <ComboBox fx:id="portionSizeBox" layoutX="729.0" layoutY="330.0" prefHeight="25.0" prefWidth="200.0" promptText="portion size" />
                         <CheckBox fx:id="spicyCheckBox" layoutX="737.0" layoutY="369.0" mnemonicParsing="false" text="Spicy" />
                         <CheckBox fx:id="veganCheckBox" layoutX="857.0" layoutY="369.0" mnemonicParsing="false" text="Vegan" />
@@ -115,6 +116,7 @@
                            </children>
                         </HBox>
                         <ComboBox fx:id="restaurantForFoodItemBox" layoutX="499.0" layoutY="365.0" onAction="#loadRestaurantMenu" prefHeight="25.0" prefWidth="211.0" promptText="restaurant" />
+                        <Button layoutX="729.0" layoutY="66.0" mnemonicParsing="false" onAction="#clearFoodItemInputFields" text="Clear Food Item Fields" />
                      </children></AnchorPane>
                </content>
             </Tab>

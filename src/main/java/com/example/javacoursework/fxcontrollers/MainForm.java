@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -136,6 +135,10 @@ public class MainForm implements Initializable {
     public ComboBox<PortionSize> portionSizeBox;
     @FXML
     public CheckBox veganCheckBox;
+    @FXML
+    public Button updateOrderButton;
+    @FXML
+    public Button deleteOrderButton;
     //</editor-fold>
 
     private ObservableList<UserTableParameters> userObservableList = FXCollections.observableArrayList();
@@ -235,15 +238,18 @@ public class MainForm implements Initializable {
     }
 
     private void setUserFormVisibility() {
-        if(currentUser instanceof BasicUser) {
+        if (currentUser instanceof Driver) {
             managementTabsPane.getTabs().remove(altUserManagement);
             managementTabsPane.getTabs().remove(userManagementTab);
+            managementTabsPane.getTabs().remove(ordersManagementTab);
+            managementTabsPane.getTabs().remove(foodManagementTab);
         } else if (currentUser instanceof Restaurant) {
             managementTabsPane.getTabs().remove(altUserManagement);
             managementTabsPane.getTabs().remove(userManagementTab);
-        } else if (currentUser instanceof Driver) {
+        } else if(currentUser instanceof BasicUser) {
             managementTabsPane.getTabs().remove(altUserManagement);
             managementTabsPane.getTabs().remove(userManagementTab);
+            managementTabsPane.getTabs().remove(foodManagementTab);
         } else if(currentUser instanceof User){
             managementTabsPane.getTabs().remove(altUserManagement);
         }
@@ -298,6 +304,18 @@ public class MainForm implements Initializable {
             foodOrderObservableList.clear();
             foodOrderObservableList.addAll(foodOrders);
             foodOrderTable.setItems(foodOrderObservableList);
+            if(currentUser instanceof Restaurant) {
+                restaurantOrderBox.setValue((Restaurant)currentUser);
+                restaurantOrderBox.setDisable(true);
+                restaurantOrderBox.setVisible(false);
+            } else if(currentUser instanceof BasicUser) {
+                clientOrderBox.setValue((BasicUser)currentUser);
+                clientOrderBox.setDisable(true);
+                clientOrderBox.setVisible(false);
+                statusOrderBox.setDisable(true);
+                statusOrderBox.getSelectionModel().select(OrderStatus.PENDING);
+                deleteOrderButton.setDisable(true);
+            }
             //</editor-fold>
 
         } else if(foodManagementTab.isSelected()){
@@ -405,6 +423,7 @@ public class MainForm implements Initializable {
             selectedFoodItem.setAllergens(allergensListView.getSelectionModel().getSelectedItems());
             customHibernate.edit(selectedFoodItem);
             loadRestaurantMenu();
+            clearFoodItemInputFields();
         } catch (Exception e) {
             if(e instanceof NumberFormatException) {
                 FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You want To set price to a text!", "Please insert a valid number");
@@ -434,12 +453,18 @@ public class MainForm implements Initializable {
         }
     }
 
-    private void clearFoodItemInputFields() {
+    public void clearFoodItemInputFields() {
         foodItemObservableList.clear();
         foodItemTable.setItems(foodItemObservableList);
         foodItemTitleField.clear();
         foodItemPriceField.clear();
         foodItemIngridientsField.clear();
+        if(!(currentUser instanceof Restaurant)){
+            restaurantForFoodItemBox.getSelectionModel().clearSelection();
+        } else{
+            restaurantForFoodItemBox.getSelectionModel().select((Restaurant)currentUser);
+            loadRestaurantMenu();
+        }
         spicyCheckBox.setSelected(false);
         veganCheckBox.setSelected(false);
         portionSizeBox.setValue(null);
@@ -464,8 +489,10 @@ public class MainForm implements Initializable {
     //<editor-fold desc="Food Order Management Tab Functionality">
     private List<FoodOrder> getFoodOrders() {
         if(currentUser instanceof Restaurant) {
-            return  customHibernate.getRestaurantOrders((Restaurant) currentUser);
-        } else {
+            return customHibernate.getRestaurantOrders((Restaurant) currentUser);
+        } else if(currentUser instanceof BasicUser){
+            return customHibernate.getBuyerOrders((BasicUser) currentUser);
+        }else {
             return customHibernate.getAllRecords(FoodOrder.class);
         }
     }
@@ -473,12 +500,19 @@ public class MainForm implements Initializable {
     public void clearOrderInputFields() {
         orderNameField.clear();
         orderPriceField.clear();
-        restaurantOrderBox.setValue(null);
-        clientOrderBox.setValue(null);
-        statusOrderBox.setValue(null);
+        if(!(currentUser instanceof  Restaurant)) {
+            restaurantOrderBox.setValue(null);
+        } else if(!(currentUser instanceof  BasicUser)) {
+            clientOrderBox.setValue(null);
+            statusOrderBox.setValue(null);
+        }
         foodItemForOrderListView.getItems().clear();
         foodOrderTable.getSelectionModel().clearSelection();
         createOrderButton.setDisable(false);
+        clientOrderBox.setDisable(false);
+        orderPriceField.setDisable(false);
+        orderNameField.setDisable(false);
+        restaurantOrderBox.setDisable(false);
     }
 
     public void createOrder(ActionEvent actionEvent) {
@@ -555,9 +589,16 @@ public class MainForm implements Initializable {
     }
 
     private void disableFoodOrderFields() {
+        if((currentUser instanceof BasicUser) && !(currentUser instanceof Restaurant)){
+            orderNameField.setDisable(true);
+            restaurantOrderBox.setDisable(true);
+        }
         if (statusOrderBox.getSelectionModel().getSelectedItem() == OrderStatus.COMPLETED) {
             clientOrderBox.setDisable(true);
             orderPriceField.setDisable(true);
+        } else {
+            clientOrderBox.setDisable(false);
+            orderPriceField.setDisable(false);
         }
         createOrderButton.setDisable(true);
     }
