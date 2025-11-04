@@ -326,11 +326,8 @@ public class MainForm implements Initializable {
     public void addNewUser() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("user-form.fxml"));
         Parent parent = fxmlLoader.load();
-
-
         UserForm userForm = fxmlLoader.getController();
         userForm.setData(entityManagerFactory, null, false);
-
         Stage stage = new Stage();
         stage.setTitle("Create new user");
         Scene scene = new Scene(parent);
@@ -341,14 +338,12 @@ public class MainForm implements Initializable {
     }
 
     public void updateExistingUser(ActionEvent actionEvent) throws IOException {
+        try{
         FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("user-form.fxml"));
         Parent parent = fxmlLoader.load();
         UserForm userForm = fxmlLoader.getController();
-        
         UserTableParameters selectedUser = userTable.getSelectionModel().getSelectedItem();
-
         userForm.setData(entityManagerFactory, convertUserTableParamsToUserClass(selectedUser), true);
-
         Stage stage = new Stage();
         stage.setTitle("Create new user");
         Scene scene = new Scene(parent);
@@ -356,6 +351,9 @@ public class MainForm implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
         reloadTableData();
+        } catch (NullPointerException e) {
+            FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You have not chosen a User To Update!", "Please choose a User to proceed");
+        }
     }
 
     private User convertUserTableParamsToUserClass(UserTableParameters selectedUser) {
@@ -371,9 +369,13 @@ public class MainForm implements Initializable {
     }
 
     public void deleteSelectedUser(ActionEvent actionEvent) {
+        try{
         UserTableParameters selectedUser = userTable.getSelectionModel().getSelectedItem();
         customHibernate.delete(User.class, selectedUser.getId());
         reloadTableData();
+        } catch (NullPointerException e) {
+            FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You have not chosen a User To Delete!", "Please choose a User to proceed");
+        }
     }
     //</editor-fold>
 
@@ -403,17 +405,25 @@ public class MainForm implements Initializable {
             selectedFoodItem.setAllergens(allergensListView.getSelectionModel().getSelectedItems());
             customHibernate.edit(selectedFoodItem);
             loadRestaurantMenu();
-        } catch (NullPointerException e) {
-            FxUtils.generateAlert(Alert.AlertType.INFORMATION, "Warning!", "You haven't selected any FoodItem for Update", "Please select the item in order to make changes to it");
+        } catch (Exception e) {
+            if(e instanceof NumberFormatException) {
+                FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You want To set price to a text!", "Please insert a valid number");
+            } else if(e instanceof NullPointerException) {
+                FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You have not chosen a Food Item To Update!", "Please choose an Item to proceed");
+            }
         }
     }
 
     public void deleteFoodItem(ActionEvent actionEvent) {
+        try{
         FoodItem selectedFoodItem = foodItemTable.getSelectionModel().getSelectedItem();
         customHibernate.delete(FoodItem.class, selectedFoodItem.getId());
         Restaurant restaurantConvenience = restaurantForFoodItemBox.getValue();
         reloadTableData();
         restaurantForFoodItemBox.setValue(restaurantConvenience);
+        } catch (NullPointerException e) {
+            FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You have not chosen a Food Item To Delete!", "Please choose an Item to proceed");
+        }
     }
 
     public void loadRestaurantMenu() {
