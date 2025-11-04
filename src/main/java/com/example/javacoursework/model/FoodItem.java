@@ -26,13 +26,13 @@ public class FoodItem {
     @Enumerated(EnumType.STRING)
     private List<Allergens> allergens = new ArrayList<>();
     @Enumerated(EnumType.STRING)
-    private List<PortionSize> portionSizes = new ArrayList<>();
+    private PortionSize portionSize;
     @ManyToMany(mappedBy = "foodItems", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<FoodOrder> orderList = new ArrayList<>();
     @ManyToOne
     private Restaurant restaurant;
 
-    public FoodItem(String name, Double price, boolean spicy, boolean vegan, Restaurant restaurant, String ingredients, List<Allergens> allergens, List<PortionSize> portionSizes) {
+    public FoodItem(String name, Double price, boolean spicy, boolean vegan, Restaurant restaurant, String ingredients, List<Allergens> allergens, PortionSize portionSize) {
         this.name = name;
         this.price = price;
         this.spicy = spicy;
@@ -40,6 +40,11 @@ public class FoodItem {
         this.restaurant = restaurant;
         this.ingredients = ingredients;
         this.allergens = allergens;
-        this.portionSizes = portionSizes;
+        this.portionSize = portionSize;
+    }
+
+    @Override
+    public String toString() {
+        return name+" "+"price: "+price+" portion size:"+portionSize+" spicy?: "+spicy+" vegan?: "+vegan;
     }
 }

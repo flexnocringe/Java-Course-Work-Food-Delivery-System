@@ -51,7 +51,7 @@ public class CustomHibernate extends GenericHibernate {
             Query q = entityManager.createQuery(query);
             foodOrders = q.getResultList();
         }catch(Exception e){
-
+            FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Problem occurred when retrieving Restaurant Orders", "Check error log");
         }
         return foodOrders;
     }
@@ -64,6 +64,22 @@ public class CustomHibernate extends GenericHibernate {
             }
         }
         return basicUsers;
+    }
+
+    public List<FoodItem> getRestaurantFoodMenu(Restaurant restaurant){
+            List<FoodItem> menu = new ArrayList<>();
+            try {
+                entityManager = entityManagerFactory.createEntityManager();
+                CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+                CriteriaQuery<FoodItem> query = cb.createQuery(FoodItem.class);
+                Root<FoodItem> root = query.from(FoodItem.class);
+                query.select(root).where(cb.equal(root.get("restaurant"), restaurant));
+                Query q = entityManager.createQuery(query);
+                menu = q.getResultList();
+            } catch (Exception e) {
+                FxUtils.generateAlert(Alert.AlertType.WARNING, "Warning!", "Problem occurred when retrieving Restaurant Menu", "Check error log");
+            }
+            return menu;
     }
 }
 

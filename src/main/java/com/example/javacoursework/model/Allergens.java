@@ -6,13 +6,11 @@ public enum Allergens {
     EGGS,
     FISH,
     PEANUTS,
-    SOYBEANS,
+    SOY,
     MILK,
     NUTS,
     CELERY,
     MUSTARD,
     SESAME,
-    SULPHITES,
-    LUPIN,
-    MOLLUSCS
+    SULPHITES
 }

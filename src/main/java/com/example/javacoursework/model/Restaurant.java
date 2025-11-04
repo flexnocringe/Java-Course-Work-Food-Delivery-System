@@ -35,4 +35,9 @@ public class Restaurant extends BasicUser{
         super(username, password, name, surname, phoneNumber, dateCreated, address);
         this.workHours = workHours;
     }
+
+    @Override
+    public String toString() {
+        return this.username;
+    }
 }

@@ -38,4 +38,8 @@ public class BasicUser extends User {
         this.address = address;
     }
 
+    @Override
+    public String toString() {
+        return this.name+" "+this.surname;
+    }
 }

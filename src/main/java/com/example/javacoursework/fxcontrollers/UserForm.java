@@ -83,6 +83,8 @@ public class UserForm implements Initializable {
         if(userForUpdate != null && isForUpdate) {
             userCreationButton.setDisable(true);
             if(userForUpdate instanceof Driver) {
+                driverRadio.setSelected(true);
+                disableFields();
                usernameField.setText(userForUpdate.getUsername());
                passwordField.setText(userForUpdate.getPassword());
                nameField.setText(userForUpdate.getName());
@@ -93,6 +95,8 @@ public class UserForm implements Initializable {
                bDateSelector.setValue(((Driver) userForUpdate).getBDate());
                vechicleTypeBox.getSelectionModel().select(((Driver) userForUpdate).getVechicleType());
            } else if(userForUpdate instanceof Restaurant) {
+                restaurantRadio.setSelected(true);
+                disableFields();
                usernameField.setText(userForUpdate.getUsername());
                passwordField.setText(userForUpdate.getPassword());
                nameField.setText(userForUpdate.getName());
@@ -101,6 +105,8 @@ public class UserForm implements Initializable {
                addressField.setText(((Restaurant) userForUpdate).getAddress());
                workHoursField.setText(((Restaurant) userForUpdate).getWorkHours());
            } else if(userForUpdate instanceof BasicUser) {
+                userRadio.setSelected(true);
+                disableFields();
                usernameField.setText(userForUpdate.getUsername());
                passwordField.setText(userForUpdate.getPassword());
                nameField.setText(userForUpdate.getName());
@@ -108,6 +114,8 @@ public class UserForm implements Initializable {
                phoneNumberField.setText(userForUpdate.getPhoneNumber());
                addressField.setText(((BasicUser) userForUpdate).getAddress());
            } else if(userForUpdate instanceof User) {
+                adminRadio.setSelected(true);
+                disableFields();
                usernameField.setText(userForUpdate.getUsername());
                passwordField.setText(userForUpdate.getPassword());
                nameField.setText(userForUpdate.getName());
@@ -184,16 +192,19 @@ public class UserForm implements Initializable {
         if(userRadio.isSelected()) {
             BasicUser basicUser = new BasicUser(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), phoneNumberField.getText(), LocalDateTime.now(), addressField.getText());
             genericHibernate.create(basicUser);
-        } else if (restaurantRadio.isSelected()) {
             clearInputFields();
+        } else if (restaurantRadio.isSelected()) {
             Restaurant restaurant = new Restaurant(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), phoneNumberField.getText(), LocalDateTime.now(), addressField.getText(), workHoursField.getText());
             genericHibernate.create(restaurant);
+            clearInputFields();
         } else if (driverRadio.isSelected()) {
             Driver driver = new Driver(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), phoneNumberField.getText(), LocalDateTime.now(), addressField.getText(), drivingLicenceField.getText(), bDateSelector.getValue(), vechicleTypeBox.getValue());
             genericHibernate.create(driver);
+            clearInputFields();
         } else if (adminRadio.isSelected()) {
             User user = new User(usernameField.getText(), passwordField.getText(), nameField.getText(), surnameField.getText(), phoneNumberField.getText(), LocalDateTime.now(), true);
             genericHibernate.create(user);
+            clearInputFields();
         }
     }
 
@@ -212,7 +223,6 @@ public class UserForm implements Initializable {
 
     public void updateUser() {
         if(userForUpdate instanceof Restaurant) {
-            restaurantRadio.setSelected(true);
             userForUpdate.setUsername(usernameField.getText());
             userForUpdate.setPassword(passwordField.getText());
             userForUpdate.setName(nameField.getText());
@@ -222,7 +232,6 @@ public class UserForm implements Initializable {
             ((Restaurant) userForUpdate).setWorkHours(workHoursField.getText());
             userForUpdate.setDateUpdated(LocalDateTime.now());
         } else if (userForUpdate instanceof Driver) {
-            driverRadio.setSelected(true);
             userForUpdate.setUsername(usernameField.getText());
             userForUpdate.setPassword(passwordField.getText());
             userForUpdate.setName(nameField.getText());
@@ -234,7 +243,6 @@ public class UserForm implements Initializable {
             ((Driver) userForUpdate).setBDate(bDateSelector.getValue());
             userForUpdate.setDateUpdated(LocalDateTime.now());
         } else if(userForUpdate instanceof BasicUser) {
-            userRadio.setSelected(true);
             userForUpdate.setUsername(usernameField.getText());
             userForUpdate.setPassword(passwordField.getText());
             userForUpdate.setName(nameField.getText());
@@ -243,7 +251,6 @@ public class UserForm implements Initializable {
             ((BasicUser) userForUpdate).setAddress(addressField.getText());
             userForUpdate.setDateUpdated(LocalDateTime.now());
         } else if(userForUpdate instanceof User) {
-            adminRadio.setSelected(true);
             userForUpdate.setUsername(usernameField.getText());
             userForUpdate.setPassword(passwordField.getText());
             userForUpdate.setName(nameField.getText());
