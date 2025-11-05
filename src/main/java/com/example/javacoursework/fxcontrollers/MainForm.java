@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -102,6 +103,14 @@ public class MainForm implements Initializable {
     public ListView<FoodItem> foodItemForOrderListView;
     @FXML
     public Button createOrderButton;
+    @FXML
+    public ComboBox<OrderStatus> orderStatusFilter;
+    @FXML
+    public Button updateOrderButton;
+    @FXML
+    public Button deleteOrderButton;
+    @FXML
+    public Button orderChatButton;
     //</editor-fold>
 
     //<editor-fold desc="FoodItem Tab, Table And Columns">
@@ -136,16 +145,38 @@ public class MainForm implements Initializable {
     @FXML
     public CheckBox veganCheckBox;
     @FXML
-    public Button updateOrderButton;
+    public Button createFoodItemButton;
     @FXML
-    public Button deleteOrderButton;
+    public TextField priceFilterField;
     @FXML
-    public Button orderChatButton;
+    public CheckBox spicyFilterBox;
+    @FXML
+    public CheckBox veganFilterBox;
+    //</editor-fold>
+
+    //<editor-fold desc="Chat Tab, Table And Columns">
+    @FXML
+    public Tab chatTab;
+    @FXML
+    public TableView<Chat> chatTable;
+    @FXML
+    public TableColumn<Chat, Integer> chatIdColumn;
+    @FXML
+    public TableColumn<Chat, String> chatNameColumn;
+    @FXML
+    public TableColumn<Chat, String> chatDateCreatedColumn;
+    @FXML
+    public ListView<Review> chatMessagesListView;
+    @FXML
+    public TextArea chatMessageField;
+    @FXML
+    public DatePicker chatDateSelector;
     //</editor-fold>
 
     private ObservableList<UserTableParameters> userObservableList = FXCollections.observableArrayList();
     private ObservableList<FoodOrder> foodOrderObservableList = FXCollections.observableArrayList();
     private ObservableList<FoodItem> foodItemObservableList = FXCollections.observableArrayList();
+    private ObservableList<Chat> chatObservableList = FXCollections.observableArrayList();
 
     private EntityManagerFactory entityManagerFactory;
 
@@ -165,7 +196,7 @@ public class MainForm implements Initializable {
         passwordColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         passwordColumn.setOnEditCommit(event -> {
             event.getTableView().getItems().get(event.getTablePosition().getRow()).setPassword(event.getNewValue());
-            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow()+1);
+            User user = customHibernate.getEntityById(User.class, idColumn.getCellData(event.getTablePosition().getRow()));
             user.setPassword(event.getNewValue());
             user.setDateUpdated(LocalDateTime.now());
             customHibernate.edit(user);
@@ -174,7 +205,7 @@ public class MainForm implements Initializable {
         nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         nameColumn.setOnEditCommit(event -> {
             event.getTableView().getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
-            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow()+1);
+            User user = customHibernate.getEntityById(User.class, idColumn.getCellData(event.getTablePosition().getRow()));
             user.setPassword(event.getNewValue());
             user.setDateUpdated(LocalDateTime.now());
             customHibernate.edit(user);
@@ -182,8 +213,9 @@ public class MainForm implements Initializable {
         surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
         surnameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         surnameColumn.setOnEditCommit(event -> {
-            event.getTableView().getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
-            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow()+1);
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setSurname(event.getNewValue());
+            System.out.println(idColumn.getCellData(event.getTablePosition().getRow()));
+            User user = customHibernate.getEntityById(User.class, idColumn.getCellData(event.getTablePosition().getRow()));
             user.setSurname(event.getNewValue());
             user.setDateUpdated(LocalDateTime.now());
             customHibernate.edit(user);
@@ -191,8 +223,8 @@ public class MainForm implements Initializable {
         phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         phoneNumberColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         phoneNumberColumn.setOnEditCommit(event -> {
-            event.getTableView().getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
-            User user = customHibernate.getEntityById(User.class, event.getTablePosition().getRow()+1);
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setPhoneNumber(event.getNewValue());
+            User user = customHibernate.getEntityById(User.class, idColumn.getCellData(event.getTablePosition().getRow()));
             user.setPhoneNumber(event.getNewValue());
             user.setDateUpdated(LocalDateTime.now());
             customHibernate.edit(user);
@@ -209,6 +241,7 @@ public class MainForm implements Initializable {
         //<editor-fold desc="Food Order Management Table Initialize">
         orderChatButton.setDisable(true);
         statusOrderBox.getItems().addAll(OrderStatus.values());
+        orderStatusFilter.getItems().addAll(OrderStatus.values());
         foodItemForOrderListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         foodOrderTable.setEditable(true);
         foodOrderIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -231,6 +264,13 @@ public class MainForm implements Initializable {
         portionSizeColumn.setCellValueFactory(new PropertyValueFactory<>("portionSize"));
         //</editor-fold>
 
+        //<editor-fold desc="Chat Management Table Initialize">
+        chatTable.setEditable(true);
+        chatIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        chatNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        chatDateCreatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
+        //</editor-fold>
+
     }
     public void setData(EntityManagerFactory entityManagerFactory, User user) {
         this.entityManagerFactory = entityManagerFactory;
@@ -246,13 +286,16 @@ public class MainForm implements Initializable {
             managementTabsPane.getTabs().remove(userManagementTab);
             managementTabsPane.getTabs().remove(ordersManagementTab);
             managementTabsPane.getTabs().remove(foodManagementTab);
+            managementTabsPane.getTabs().remove(chatTab);
         } else if (currentUser instanceof Restaurant) {
             managementTabsPane.getTabs().remove(altUserManagement);
             managementTabsPane.getTabs().remove(userManagementTab);
+            managementTabsPane.getTabs().remove(chatTab);
         } else if(currentUser instanceof BasicUser) {
             managementTabsPane.getTabs().remove(altUserManagement);
             managementTabsPane.getTabs().remove(userManagementTab);
             managementTabsPane.getTabs().remove(foodManagementTab);
+            managementTabsPane.getTabs().remove(chatTab);
         } else if(currentUser instanceof User){
             managementTabsPane.getTabs().remove(altUserManagement);
         }
@@ -338,7 +381,18 @@ public class MainForm implements Initializable {
             }
             //</editor-fold>
 
-        } else if(altUserManagement.isSelected()){
+        } else if(chatTab.isSelected()){
+
+            //<editor-fold desc="Chat Management Table Reload">
+            chatDateSelector.setValue(null);
+            chatMessagesListView.getItems().clear();
+            chatTable.getSelectionModel().clearSelection();
+            chatObservableList.clear();
+            chatObservableList.addAll(customHibernate.getAllRecords(Chat.class));
+            chatTable.setItems(chatObservableList);
+            //</editor-fold>
+
+        }else if(altUserManagement.isSelected()){
             List<User> userList = customHibernate.getAllRecords(User.class);
             userListView.getItems().clear();
             userListView.getItems().addAll(userList);
@@ -416,8 +470,10 @@ public class MainForm implements Initializable {
             selectedFoodItem.setVegan(veganCheckBox.isSelected());
             selectedFoodItem.setAllergens(allergensListView.getSelectionModel().getSelectedItems());
             customHibernate.edit(selectedFoodItem);
-            loadRestaurantMenu();
+            Restaurant restaurantConvenience = restaurantForFoodItemBox.getValue();
             clearFoodItemInputFields();
+            restaurantForFoodItemBox.setValue(restaurantConvenience);
+            loadRestaurantMenu();
         } catch (Exception e) {
             if(e instanceof NumberFormatException) {
                 FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You want To set price to a text!", "Please insert a valid number");
@@ -462,6 +518,7 @@ public class MainForm implements Initializable {
         spicyCheckBox.setSelected(false);
         veganCheckBox.setSelected(false);
         portionSizeBox.setValue(null);
+        createFoodItemButton.setDisable(false);
         allergensListView.getSelectionModel().clearSelection();
     }
 
@@ -476,6 +533,18 @@ public class MainForm implements Initializable {
         allergensListView.getSelectionModel().clearSelection();
         for(Allergens allergen: selectedFoodItem.getAllergens()) {
             allergensListView.getSelectionModel().select(allergen);
+        }
+        createFoodItemButton.setDisable(true);
+    }
+    public void filterFoodItems(ActionEvent actionEvent) {
+        List<FoodItem> filteredFoodItems = new ArrayList<>();
+        try {
+            filteredFoodItems = customHibernate.filterFoodItemsByCriteria(Double.valueOf(priceFilterField.getText()), spicyFilterBox.isSelected(), veganFilterBox.isSelected());
+            foodItemObservableList.clear();
+            foodItemObservableList.addAll(filteredFoodItems);
+            foodItemTable.setItems(foodItemObservableList);
+        } catch (NumberFormatException e) {
+            FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You want To set price to a text!", "Please insert a valid number");
         }
     }
     //</editor-fold>
@@ -494,11 +563,15 @@ public class MainForm implements Initializable {
     public void clearOrderInputFields() {
         orderNameField.clear();
         orderPriceField.clear();
-        if(!(currentUser instanceof  Restaurant)) {
-            restaurantOrderBox.setValue(null);
-        } else if(!(currentUser instanceof  BasicUser)) {
-            clientOrderBox.setValue(null);
-            statusOrderBox.setValue(null);
+        restaurantOrderBox.setValue(null);
+        clientOrderBox.setValue(null);
+        statusOrderBox.setValue(null);
+        if(currentUser instanceof  Restaurant) {
+            restaurantOrderBox.setValue((Restaurant) currentUser);
+            loadRestaurantMenuForOrder();
+        } else if(currentUser instanceof  BasicUser) {
+            clientOrderBox.setValue((BasicUser) currentUser);
+            statusOrderBox.setValue(OrderStatus.PENDING);
         }
         foodItemForOrderListView.getItems().clear();
         foodOrderTable.getSelectionModel().clearSelection();
@@ -609,6 +682,52 @@ public class MainForm implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
         reloadTableData();
+    }
+
+    public void filterOrdersByStatus(ActionEvent actionEvent) {
+        List<FoodOrder> filteredOrders = new ArrayList<>();
+        filteredOrders = customHibernate.filterOrdersByStatus(orderStatusFilter.getValue());
+        foodOrderObservableList.clear();
+        foodOrderObservableList.addAll(filteredOrders);
+        foodOrderTable.setItems(foodOrderObservableList);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Chat Management Tab Funcionality">
+    public void sendMessageAsAdmin(ActionEvent actionEvent) {
+        Review message = new Review(chatMessageField.getText(), LocalDateTime.now(), currentUser, chatTable.getSelectionModel().getSelectedItem());
+        customHibernate.create(message);
+        chatMessageField.clear();
+        int selectedChat = chatTable.getSelectionModel().getSelectedIndex();
+        reloadTableData();
+        chatTable.getSelectionModel().select(selectedChat);
+        loadChatMessages();
+    }
+
+    public void deleteChatMessage(ActionEvent actionEvent) {
+        try {
+            customHibernate.delete(Review.class, chatMessagesListView.getSelectionModel().getSelectedItem().getId());
+            int selectedChat = chatTable.getSelectionModel().getSelectedIndex();
+            reloadTableData();
+            chatTable.getSelectionModel().select(selectedChat);
+            loadChatMessages();
+        } catch (NullPointerException e) {
+            FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You have not chosen a Food Order To Delete!", "Please choose an Order to proceed");
+        }
+    }
+
+    public void loadChatMessages() {
+        Chat selectedChat = chatTable.getSelectionModel().getSelectedItem();
+        chatMessagesListView.getItems().clear();
+        chatMessagesListView.getItems().addAll(selectedChat.getMessages());
+    }
+
+    public void filterChatsByDate(ActionEvent actionEvent) {
+        List<Chat> filteredChats = new ArrayList<>();
+        filteredChats = customHibernate.filterChatByDate(chatDateSelector.getValue());
+        chatObservableList.clear();
+        chatObservableList.addAll(filteredChats);
+        chatTable.setItems(chatObservableList);
     }
     //</editor-fold>
 }

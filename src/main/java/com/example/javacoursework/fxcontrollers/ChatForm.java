@@ -44,7 +44,7 @@ public class ChatForm {
             currentFoodOrder.setChat(chat);
             customHibernate.edit(currentFoodOrder);
         }
-        Review message = new Review(chatMessageTextField.getText(), LocalDateTime.now(), (BasicUser) currentUser, currentFoodOrder.getChat());
+        Review message = new Review(chatMessageTextField.getText(), LocalDateTime.now(), currentUser, currentFoodOrder.getChat());
         customHibernate.create(message);
         chatMessageListView.getItems().add(message);
         chatMessageTextField.clear();

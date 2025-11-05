@@ -69,6 +69,6 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "username: "+username+" name: "+name+" phone: "+phoneNumber;
+        return this.name;
     }
 }

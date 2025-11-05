@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -83,6 +84,9 @@
                         <Text layoutX="696.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Food Items" />
                         <Button layoutX="696.0" layoutY="90.0" mnemonicParsing="false" onAction="#clearOrderInputFields" text="Clear Input Fields" />
                         <Button fx:id="orderChatButton" layoutX="10.0" layoutY="372.0" mnemonicParsing="false" onAction="#loadChatForm" prefHeight="25.0" prefWidth="484.0" text="View Order Chat" AnchorPane.leftAnchor="10.0" />
+                        <ComboBox fx:id="orderStatusFilter" layoutX="14.0" layoutY="47.0" prefHeight="25.0" prefWidth="183.0" promptText="status filter" />
+                        <Button layoutX="209.0" layoutY="47.0" mnemonicParsing="false" onAction="#filterOrdersByStatus" prefHeight="25.0" prefWidth="90.0" text="Filter" />
+                        <Button layoutX="312.0" layoutY="47.0" mnemonicParsing="false" onAction="#reloadTableData" prefHeight="25.0" prefWidth="107.0" text="Clear Filter" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -110,13 +114,18 @@
                         <CheckBox fx:id="veganCheckBox" layoutX="857.0" layoutY="369.0" mnemonicParsing="false" text="Vegan" />
                         <HBox alignment="TOP_CENTER" layoutX="499.0" layoutY="415.0" prefHeight="25.0" prefWidth="433.0" spacing="30.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#createNewFoodItem" text="Create New Food Item" />
+                              <Button fx:id="createFoodItemButton" mnemonicParsing="false" onAction="#createNewFoodItem" text="Create New Food Item" />
                               <Button mnemonicParsing="false" onAction="#updateFoodItem" text="Update Food Item" />
                               <Button mnemonicParsing="false" onAction="#deleteFoodItem" text="Delete Food Item" />
                            </children>
                         </HBox>
                         <ComboBox fx:id="restaurantForFoodItemBox" layoutX="499.0" layoutY="365.0" onAction="#loadRestaurantMenu" prefHeight="25.0" prefWidth="211.0" promptText="restaurant" />
                         <Button layoutX="729.0" layoutY="66.0" mnemonicParsing="false" onAction="#clearFoodItemInputFields" text="Clear Food Item Fields" />
+                        <TextField fx:id="priceFilterField" layoutX="20.0" layoutY="21.0" promptText="price filter" />
+                        <CheckBox fx:id="spicyFilterBox" layoutX="178.0" layoutY="25.0" mnemonicParsing="false" text="Spicy Filter" />
+                        <CheckBox fx:id="veganFilterBox" layoutX="263.0" layoutY="25.0" mnemonicParsing="false" text="Vegan Filter" />
+                        <Button layoutX="354.0" layoutY="21.0" mnemonicParsing="false" onAction="#filterFoodItems" text="Filter" />
+                        <Button layoutX="409.0" layoutY="21.0" mnemonicParsing="false" onAction="#loadRestaurantMenu" text="Clear Filter" />
                      </children></AnchorPane>
                </content>
             </Tab>
@@ -128,6 +137,32 @@
                         <ListView fx:id="userListView" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="575.0" />
                         <Button layoutX="260.0" layoutY="318.0" mnemonicParsing="false" onAction="#updateExistingUser" text="Update user" />
                         <Button layoutX="418.0" layoutY="318.0" mnemonicParsing="false" onAction="#deleteSelectedUser" text="Delete user" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="chatTab" onSelectionChanged="#reloadTableData" text="Chat Management">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="chatTable" layoutX="14.0" layoutY="51.0" onMouseClicked="#loadChatMessages" prefHeight="432.0" prefWidth="404.0">
+                          <columns>
+                            <TableColumn fx:id="chatIdColumn" prefWidth="42.0" text="id" />
+                            <TableColumn fx:id="chatNameColumn" prefWidth="192.0" text="name" />
+                              <TableColumn fx:id="chatDateCreatedColumn" prefWidth="169.0" text="date created" />
+                          </columns>
+                        </TableView>
+                        <ListView fx:id="chatMessagesListView" layoutX="431.0" layoutY="14.0" prefHeight="329.0" prefWidth="478.0" AnchorPane.topAnchor="14.0" />
+                        <TextArea fx:id="chatMessageField" layoutX="431.0" layoutY="354.0" prefHeight="91.0" prefWidth="479.0" promptText="Text Message" />
+                        <HBox alignment="TOP_CENTER" layoutX="431.0" layoutY="457.0" spacing="30.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#sendMessageAsAdmin" prefHeight="25.0" prefWidth="227.0" text="Send Message" />
+                              <Button mnemonicParsing="false" onAction="#deleteChatMessage" prefHeight="25.0" prefWidth="223.0" text="Delete Message" />
+                           </children>
+                        </HBox>
+                        <DatePicker fx:id="chatDateSelector" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="210.0" promptText="date from" AnchorPane.topAnchor="15.0" />
+                        <Button layoutX="238.0" layoutY="15.0" mnemonicParsing="false" onAction="#filterChatsByDate" prefHeight="25.0" prefWidth="80.0" text="Filter" />
+                        <Button layoutX="327.0" layoutY="15.0" mnemonicParsing="false" onAction="#reloadTableData" prefHeight="25.0" prefWidth="89.0" text="Clear Filter" />
                      </children>
                   </AnchorPane>
               </content>

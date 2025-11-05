@@ -24,7 +24,7 @@ public class FoodOrder {
     private Double price;
     @ManyToMany
     private List<FoodItem> foodItems = new ArrayList<>();
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Chat chat;
     @ManyToOne
     private BasicUser buyer;

@@ -19,9 +19,9 @@ public class Chat {
     private String name;
     private String chatText;
     private LocalDate dateCreated;
-    @OneToOne(mappedBy ="chat", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy ="chat")
     private FoodOrder foodOrder;
-    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Review> messages = new ArrayList<>();
 
     public Chat(String name, LocalDate dateCreated, FoodOrder foodOrder) {
