@@ -72,8 +72,8 @@
                            <children>
                               <TextField fx:id="orderNameField" promptText="order name" />
                               <TextField fx:id="orderPriceField" promptText="price" />
-                              <ComboBox fx:id="restaurantOrderBox" onAction="#loadRestaurantMenuForOrder" prefWidth="150.0" promptText="restaurant" />
                               <ComboBox fx:id="clientOrderBox" prefWidth="150.0" promptText="client" />
+                              <ComboBox fx:id="restaurantOrderBox" onAction="#loadRestaurantMenuForOrder" prefWidth="150.0" promptText="restaurant" />
                               <ComboBox fx:id="statusOrderBox" prefWidth="150.0" promptText="status" />
                               <Button fx:id="createOrderButton" mnemonicParsing="false" onAction="#createOrder" prefWidth="149.0" text="Create Order" />
                               <Button fx:id="updateOrderButton" mnemonicParsing="false" onAction="#updateOrder" prefHeight="25.0" prefWidth="160.0" text="Update Order" />
@@ -87,6 +87,8 @@
                         <ComboBox fx:id="orderStatusFilter" layoutX="14.0" layoutY="47.0" prefHeight="25.0" prefWidth="183.0" promptText="status filter" />
                         <Button layoutX="209.0" layoutY="47.0" mnemonicParsing="false" onAction="#filterOrdersByStatus" prefHeight="25.0" prefWidth="90.0" text="Filter" />
                         <Button layoutX="312.0" layoutY="47.0" mnemonicParsing="false" onAction="#reloadTableData" prefHeight="25.0" prefWidth="107.0" text="Clear Filter" />
+                        <Button fx:id="acceptOrderButton" layoutX="521.0" layoutY="213.0" mnemonicParsing="false" onAction="#acceptSelectedOrder" prefHeight="25.0" prefWidth="151.0" text="Accept Order" />
+                        <Button fx:id="setForDelivery" layoutX="522.0" layoutY="251.0" mnemonicParsing="false" onAction="#setForDeliverySelectedOrder" prefHeight="25.0" prefWidth="150.0" text="Set For Delivery" />
                      </children></AnchorPane>
             </content>
           </Tab>

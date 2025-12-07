@@ -16,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -65,6 +66,8 @@ public class UserForm implements Initializable {
     public DatePicker bDateSelector;
     @FXML
     public Button userCreationButton;
+    @FXML
+    public HBox userSelectionButtons;
 
     private EntityManagerFactory entityManagerFactory;
     private GenericHibernate genericHibernate;
@@ -72,6 +75,12 @@ public class UserForm implements Initializable {
     private boolean isForUpdate;
 
     public void setData(EntityManagerFactory entityManagerFactory, User user, boolean isForUpdate) {
+        if(user == null){
+            restaurantRadio.setSelected(true);
+            disableFields();
+            userSelectionButtons.setDisable(true);
+            userSelectionButtons.setVisible(false);
+        }
         this.entityManagerFactory = entityManagerFactory;
         this.genericHibernate = new GenericHibernate(entityManagerFactory);
         this.userForUpdate = user;

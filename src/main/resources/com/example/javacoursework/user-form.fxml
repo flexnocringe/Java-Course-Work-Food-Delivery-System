@@ -27,7 +27,7 @@
             <Button fx:id="updateUserButton" mnemonicParsing="false" onAction="#updateUser" text="Update user" />
          </children>
       </HBox>
-      <HBox layoutX="50.0" layoutY="95.0" spacing="85.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0">
+      <HBox fx:id="userSelectionButtons" layoutX="50.0" layoutY="95.0" spacing="85.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0">
          <children>
             <RadioButton fx:id="adminRadio" mnemonicParsing="false" onAction="#disableFields" text="Admin">
                <toggleGroup>

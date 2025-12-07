@@ -111,6 +111,10 @@ public class MainForm implements Initializable {
     public Button deleteOrderButton;
     @FXML
     public Button orderChatButton;
+    @FXML
+    public Button acceptOrderButton;
+    @FXML
+    public Button setForDelivery;
     //</editor-fold>
 
     //<editor-fold desc="FoodItem Tab, Table And Columns">
@@ -342,6 +346,10 @@ public class MainForm implements Initializable {
 
             //<editor-fold desc="FoodOrder Management Tab Reload">
             clearOrderInputFields();
+            acceptOrderButton.setDisable(true);
+            acceptOrderButton.setVisible(false);
+            setForDelivery.setDisable(true);
+            setForDelivery.setVisible(false);
             restaurantOrderBox.getItems().clear();
             restaurantOrderBox.getItems().addAll(customHibernate.getAllRecords(Restaurant.class));
             clientOrderBox.getItems().clear();
@@ -355,13 +363,16 @@ public class MainForm implements Initializable {
                 loadRestaurantMenuForOrder();
                 restaurantOrderBox.setDisable(true);
                 restaurantOrderBox.setVisible(false);
-                orderChatButton.setDisable(false);
+                statusOrderBox.setDisable(true);
+                statusOrderBox.setVisible(false);
+                setForDelivery.setVisible(true);
+                acceptOrderButton.setVisible(true);
             } else if(currentUser instanceof BasicUser) {
                 clientOrderBox.setValue((BasicUser)currentUser);
                 clientOrderBox.setDisable(true);
                 clientOrderBox.setVisible(false);
                 statusOrderBox.setDisable(true);
-                statusOrderBox.getSelectionModel().select(OrderStatus.PENDING);
+                statusOrderBox.getSelectionModel().select(OrderStatus.OPEN);
                 deleteOrderButton.setDisable(true);
                 orderChatButton.setDisable(false);
             }
@@ -571,7 +582,7 @@ public class MainForm implements Initializable {
             loadRestaurantMenuForOrder();
         } else if(currentUser instanceof  BasicUser) {
             clientOrderBox.setValue((BasicUser) currentUser);
-            statusOrderBox.setValue(OrderStatus.PENDING);
+            statusOrderBox.setValue(OrderStatus.OPEN);
         }
         foodItemForOrderListView.getItems().clear();
         foodOrderTable.getSelectionModel().clearSelection();
@@ -633,6 +644,13 @@ public class MainForm implements Initializable {
 
     public void loadOrderForUpdate(MouseEvent mouseEvent) {
         FoodOrder selectedOrder = foodOrderTable.getSelectionModel().getSelectedItem();
+        if(selectedOrder.getOrderStatus() == OrderStatus.OPEN) {
+            acceptOrderButton.setDisable(false);
+        }
+        else if(selectedOrder.getOrderStatus() == OrderStatus.ACCEPTED) {
+            acceptOrderButton.setDisable(true);
+            setForDelivery.setDisable(false);
+        }
         clientOrderBox.getItems().stream()
                 .filter(c -> c.getId() == selectedOrder.getBuyer().getId())
                 .findFirst()
@@ -653,6 +671,24 @@ public class MainForm implements Initializable {
                         .anyMatch(item -> item.getId() == f.getId()))
                 .forEach(u -> foodItemForOrderListView.getSelectionModel().select(u));
         disableFoodOrderFields();
+    }
+
+    public void acceptSelectedOrder(ActionEvent actionEvent) {
+        FoodOrder selectedOrder = foodOrderTable.getSelectionModel().getSelectedItem();
+        if(selectedOrder.getOrderStatus() == OrderStatus.OPEN) {
+            selectedOrder.setOrderStatus(OrderStatus.ACCEPTED);
+            customHibernate.edit(selectedOrder);
+            reloadTableData();
+        }
+    }
+
+    public void setForDeliverySelectedOrder(ActionEvent actionEvent) {
+        FoodOrder selectedOrder = foodOrderTable.getSelectionModel().getSelectedItem();
+        if(selectedOrder.getOrderStatus() == OrderStatus.ACCEPTED) {
+            selectedOrder.setOrderStatus(OrderStatus.READY_FOR_PICKUP);
+            customHibernate.edit(selectedOrder);
+            reloadTableData();
+        }
     }
 
     private void disableFoodOrderFields() {
