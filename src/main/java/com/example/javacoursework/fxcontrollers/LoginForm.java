@@ -2,6 +2,7 @@ package com.example.javacoursework.fxcontrollers;
 
 import com.example.javacoursework.TestApplication;
 import com.example.javacoursework.hibernatecontrol.CustomHibernate;
+import com.example.javacoursework.model.Salt;
 import com.example.javacoursework.model.User;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -16,6 +17,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import java.io.IOException;
 
@@ -42,8 +45,6 @@ public class LoginForm {
             stage.setTitle("Managment Window");
             stage.setScene(scene);
             stage.show();
-        } else{
-            FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "Something went wrong during login", "No such user or wrong credentials");
         }
     }
 
@@ -52,7 +53,7 @@ public class LoginForm {
         Parent parent = fxmlLoader.load();
 
         UserForm userForm = fxmlLoader.getController();
-        userForm.setData(entityManagerFactory, null, false);
+        userForm.setData(entityManagerFactory, null, false, false);
 
         Stage stage = new Stage();
         stage.setTitle("Create new user");

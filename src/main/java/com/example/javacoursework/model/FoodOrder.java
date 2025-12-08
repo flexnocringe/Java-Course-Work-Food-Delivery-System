@@ -22,7 +22,7 @@ public class FoodOrder {
     private int id;
     private String name;
     private Double price;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<FoodItem> foodItems = new ArrayList<>();
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Chat chat;

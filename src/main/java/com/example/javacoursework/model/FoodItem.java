@@ -27,7 +27,7 @@ public class FoodItem {
     private List<Allergens> allergens = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     private PortionSize portionSize;
-    @ManyToMany(mappedBy = "foodItems", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(mappedBy = "foodItems", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private List<FoodOrder> orderList = new ArrayList<>();
     @ManyToOne
     private Restaurant restaurant;

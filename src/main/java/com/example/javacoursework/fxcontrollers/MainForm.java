@@ -18,6 +18,9 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.hibernate.usertype.UserType;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,10 +33,6 @@ import java.util.ResourceBundle;
 public class MainForm implements Initializable {
     @FXML
     public TabPane managementTabsPane;
-    @FXML
-    public Tab altUserManagement; //uzkistukas
-    @FXML
-    public ListView<User> userListView; // uzskistukas
 
     //<editor-fold desc="User Tab, Table And Columns">
     @FXML
@@ -70,6 +69,14 @@ public class MainForm implements Initializable {
     public TableColumn<UserTableParameters, String> workHoursColumn;
     @FXML
     public TableColumn dummyColumn;
+    @FXML
+    public ComboBox<String> dTypeComboBoxForFilter;
+    @FXML
+    public TextField usernameForFilterField;
+    @FXML
+    public TextField nameForFilterField;
+    @FXML
+    public TextField surnameForFilterField;
     //</editor-fold>
     
     //<editor-fold desc="FoodOrder Tab, Table And Columns">
@@ -188,10 +195,13 @@ public class MainForm implements Initializable {
 
     private User currentUser;
 
+    private final TextEncryptor passwordEncryptor = Encryptors.text("whatdoyoumean", Salt.getSalt());
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         //<editor-fold desc="User Management Table Initialize">
+        dTypeComboBoxForFilter.getItems().addAll(new String[] {"User", "BasicUser", "Restaurant", "Driver"});
         userTable.setEditable(true);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         userTypeColumn.setCellValueFactory(new PropertyValueFactory<>("userType")); //Kaip type paimt
@@ -286,22 +296,18 @@ public class MainForm implements Initializable {
 
     private void setUserFormVisibility() {
         if (currentUser instanceof Driver) {
-            managementTabsPane.getTabs().remove(altUserManagement);
             managementTabsPane.getTabs().remove(userManagementTab);
             managementTabsPane.getTabs().remove(ordersManagementTab);
             managementTabsPane.getTabs().remove(foodManagementTab);
             managementTabsPane.getTabs().remove(chatTab);
         } else if (currentUser instanceof Restaurant) {
-            managementTabsPane.getTabs().remove(altUserManagement);
             managementTabsPane.getTabs().remove(userManagementTab);
             managementTabsPane.getTabs().remove(chatTab);
         } else if(currentUser instanceof BasicUser) {
-            managementTabsPane.getTabs().remove(altUserManagement);
             managementTabsPane.getTabs().remove(userManagementTab);
             managementTabsPane.getTabs().remove(foodManagementTab);
             managementTabsPane.getTabs().remove(chatTab);
         } else if(currentUser instanceof User){
-            managementTabsPane.getTabs().remove(altUserManagement);
         }
     }
 
@@ -309,6 +315,10 @@ public class MainForm implements Initializable {
         if(userManagementTab.isSelected()){
 
             //<editor-fold desc="User Management Tab Table Reload">
+            nameForFilterField.clear();
+            surnameForFilterField.clear();
+            usernameForFilterField.clear();
+            dTypeComboBoxForFilter.setValue("");
             userObservableList.clear();
             List<User> users = customHibernate.getAllRecords(User.class);
             for(User user : users){
@@ -316,7 +326,7 @@ public class MainForm implements Initializable {
                 if(user instanceof User) {
                     userTableParameters.setUserType(user.getClass().getSimpleName());
                     userTableParameters.setUsername(user.getUsername());
-                    userTableParameters.setPassword(user.getPassword());
+                    userTableParameters.setPassword(passwordEncryptor.decrypt(user.getPassword()));
                     userTableParameters.setName(user.getName());
                     userTableParameters.setSurname(user.getSurname());
                     userTableParameters.setId(user.getId());
@@ -345,6 +355,7 @@ public class MainForm implements Initializable {
         } else if(ordersManagementTab.isSelected()){
 
             //<editor-fold desc="FoodOrder Management Tab Reload">
+            orderStatusFilter.setValue(null);
             clearOrderInputFields();
             acceptOrderButton.setDisable(true);
             acceptOrderButton.setVisible(false);
@@ -367,6 +378,8 @@ public class MainForm implements Initializable {
                 statusOrderBox.setVisible(false);
                 setForDelivery.setVisible(true);
                 acceptOrderButton.setVisible(true);
+                createOrderButton.setDisable(true);
+                createOrderButton.setVisible(false);
             } else if(currentUser instanceof BasicUser) {
                 clientOrderBox.setValue((BasicUser)currentUser);
                 clientOrderBox.setDisable(true);
@@ -374,13 +387,15 @@ public class MainForm implements Initializable {
                 statusOrderBox.setDisable(true);
                 statusOrderBox.getSelectionModel().select(OrderStatus.OPEN);
                 deleteOrderButton.setDisable(true);
-                orderChatButton.setDisable(false);
             }
             //</editor-fold>
 
         } else if(foodManagementTab.isSelected()){
 
             //<editor-fold desc="FoodItem Management Table Reload">
+            priceFilterField.clear();
+            spicyFilterBox.setSelected(false);
+            veganFilterBox.setSelected(false);
             clearFoodItemInputFields();
             restaurantForFoodItemBox.getItems().clear();
             restaurantForFoodItemBox.getItems().addAll(customHibernate.getAllRecords(Restaurant.class));
@@ -403,10 +418,6 @@ public class MainForm implements Initializable {
             chatTable.setItems(chatObservableList);
             //</editor-fold>
 
-        }else if(altUserManagement.isSelected()){
-            List<User> userList = customHibernate.getAllRecords(User.class);
-            userListView.getItems().clear();
-            userListView.getItems().addAll(userList);
         }
     }
 
@@ -416,7 +427,7 @@ public class MainForm implements Initializable {
         FXMLLoader fxmlLoader = new FXMLLoader(TestApplication.class.getResource("user-form.fxml"));
         Parent parent = fxmlLoader.load();
         UserForm userForm = fxmlLoader.getController();
-        userForm.setData(entityManagerFactory, null, false);
+        userForm.setData(entityManagerFactory, null, false, currentUser.isAdmin());
         Stage stage = new Stage();
         stage.setTitle("Create new user");
         Scene scene = new Scene(parent);
@@ -432,7 +443,7 @@ public class MainForm implements Initializable {
         Parent parent = fxmlLoader.load();
         UserForm userForm = fxmlLoader.getController();
         UserTableParameters selectedUser = userTable.getSelectionModel().getSelectedItem();
-        userForm.setData(entityManagerFactory, customHibernate.getEntityById(User.class, selectedUser.getId()), true);
+        userForm.setData(entityManagerFactory, customHibernate.getEntityById(User.class, selectedUser.getId()), true, currentUser.isAdmin());
         Stage stage = new Stage();
         stage.setTitle("Create new user");
         Scene scene = new Scene(parent);
@@ -452,6 +463,18 @@ public class MainForm implements Initializable {
         reloadTableData();
         } catch (NullPointerException e) {
             FxUtils.generateAlert(Alert.AlertType.WARNING, "Error!", "You have not chosen a User To Delete!", "Please choose a User to proceed");
+        }
+    }
+
+    public void filterUsers(ActionEvent actionEvent) {
+        List<UserTableParameters> filteredUsers = new ArrayList<>();
+        try {
+            filteredUsers = customHibernate.filterUsers(dTypeComboBoxForFilter.getValue(), usernameForFilterField.getText(), nameForFilterField.getText(), surnameForFilterField.getText());
+            userObservableList.clear();
+            userObservableList.addAll(filteredUsers);
+            userTable.setItems(userObservableList);
+        } catch (Exception e) {
+            FxUtils.generateAlert(Alert.AlertType.INFORMATION, "Error!", "Error while filtering users.", e.getMessage());
         }
     }
     //</editor-fold>
@@ -580,13 +603,13 @@ public class MainForm implements Initializable {
         if(currentUser instanceof  Restaurant) {
             restaurantOrderBox.setValue((Restaurant) currentUser);
             loadRestaurantMenuForOrder();
-        } else if(currentUser instanceof  BasicUser) {
+        } else if((currentUser instanceof  BasicUser) && (currentUser instanceof User)) {
             clientOrderBox.setValue((BasicUser) currentUser);
             statusOrderBox.setValue(OrderStatus.OPEN);
+            createOrderButton.setDisable(false);
         }
         foodItemForOrderListView.getItems().clear();
         foodOrderTable.getSelectionModel().clearSelection();
-        createOrderButton.setDisable(false);
         clientOrderBox.setDisable(false);
         orderPriceField.setDisable(false);
         orderNameField.setDisable(false);
@@ -643,6 +666,9 @@ public class MainForm implements Initializable {
     }
 
     public void loadOrderForUpdate(MouseEvent mouseEvent) {
+        if((currentUser instanceof  Restaurant) && (currentUser instanceof  BasicUser)) {
+            orderChatButton.setDisable(false);
+        }
         FoodOrder selectedOrder = foodOrderTable.getSelectionModel().getSelectedItem();
         if(selectedOrder.getOrderStatus() == OrderStatus.OPEN) {
             acceptOrderButton.setDisable(false);
@@ -726,6 +752,15 @@ public class MainForm implements Initializable {
         foodOrderObservableList.clear();
         foodOrderObservableList.addAll(filteredOrders);
         foodOrderTable.setItems(foodOrderObservableList);
+    }
+
+    public void recalculateOrderPrice(MouseEvent mouseEvent) {
+        List<FoodItem> selectedItems = foodItemForOrderListView.getSelectionModel().getSelectedItems();
+        Double price = 0.;
+        for(FoodItem item : selectedItems){
+            price += item.getPrice();
+        }
+        orderPriceField.setText(price.toString());
     }
     //</editor-fold>
 

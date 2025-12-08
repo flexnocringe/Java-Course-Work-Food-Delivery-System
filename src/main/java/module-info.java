@@ -9,6 +9,7 @@ module com.example.javacoursework {
     requires org.controlsfx.controls;
     requires mysql.connector.j;
     requires javafx.graphics;
+    requires spring.security.crypto;
 
     opens com.example.javacoursework to javafx.fxml, org.hibernate.orm.core, jakarta.persistence;
     exports com.example.javacoursework;

@@ -24,7 +24,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="502.0" prefWidth="1188.0">
                      <children>
-                        <TableView fx:id="userTable" layoutX="14.0" layoutY="14.0" prefHeight="244.0" prefWidth="1220.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+                        <TableView fx:id="userTable" layoutX="15.0" layoutY="44.0" prefHeight="244.0" prefWidth="1220.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="44.0">
                           <columns>
                             <TableColumn fx:id="idColumn" prefWidth="28.0" text="Id" />
                             <TableColumn fx:id="userTypeColumn" prefWidth="82.0" text="User Type" />
@@ -48,6 +48,16 @@
                               <Button mnemonicParsing="false" onAction="#addNewUser" text="Add new user" />
                               <Button mnemonicParsing="false" onAction="#updateExistingUser" text="Update user" />
                               <Button mnemonicParsing="false" onAction="#deleteSelectedUser" text="Delete user" />
+                           </children>
+                        </HBox>
+                        <HBox layoutX="15.0" layoutY="14.0" prefHeight="25.0" prefWidth="886.0" spacing="10.0">
+                           <children>
+                              <ComboBox fx:id="dTypeComboBoxForFilter" prefWidth="150.0" promptText="user type" />
+                              <TextField fx:id="usernameForFilterField" promptText="username" />
+                              <TextField fx:id="nameForFilterField" promptText="name" />
+                              <TextField fx:id="surnameForFilterField" promptText="surname" />
+                              <Button mnemonicParsing="false" onAction="#filterUsers" prefHeight="25.0" prefWidth="88.0" text="Filter" />
+                              <Button mnemonicParsing="false" onAction="#reloadTableData" text="Clear Filters" />
                            </children>
                         </HBox>
                      </children>
@@ -80,7 +90,7 @@
                               <Button fx:id="deleteOrderButton" mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0" prefWidth="161.0" text="Delete Order" />
                            </children>
                         </VBox>
-                        <ListView fx:id="foodItemForOrderListView" layoutX="696.0" layoutY="147.0" prefHeight="249.0" prefWidth="563.0" />
+                        <ListView fx:id="foodItemForOrderListView" layoutX="696.0" layoutY="147.0" onMouseClicked="#recalculateOrderPrice" prefHeight="249.0" prefWidth="563.0" />
                         <Text layoutX="696.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Food Items" />
                         <Button layoutX="696.0" layoutY="90.0" mnemonicParsing="false" onAction="#clearOrderInputFields" text="Clear Input Fields" />
                         <Button fx:id="orderChatButton" layoutX="10.0" layoutY="372.0" mnemonicParsing="false" onAction="#loadChatForm" prefHeight="25.0" prefWidth="484.0" text="View Order Chat" AnchorPane.leftAnchor="10.0" />
@@ -130,18 +140,6 @@
                         <Button layoutX="409.0" layoutY="21.0" mnemonicParsing="false" onAction="#loadRestaurantMenu" text="Clear Filter" />
                      </children></AnchorPane>
                </content>
-            </Tab>
-            <Tab fx:id="altUserManagement" onSelectionChanged="#reloadTableData" text="Alternative User management">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <Button layoutX="114.0" layoutY="318.0" mnemonicParsing="false" onAction="#addNewUser" text="Add new user" />
-                        <ListView fx:id="userListView" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="575.0" />
-                        <Button layoutX="260.0" layoutY="318.0" mnemonicParsing="false" onAction="#updateExistingUser" text="Update user" />
-                        <Button layoutX="418.0" layoutY="318.0" mnemonicParsing="false" onAction="#deleteSelectedUser" text="Delete user" />
-                     </children>
-                  </AnchorPane>
-              </content>
             </Tab>
             <Tab fx:id="chatTab" onSelectionChanged="#reloadTableData" text="Chat Management">
               <content>

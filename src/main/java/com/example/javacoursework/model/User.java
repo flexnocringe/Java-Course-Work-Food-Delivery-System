@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.crypto.keygen.KeyGenerators;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -71,4 +72,5 @@ public class User implements Serializable {
     public String toString() {
         return this.name;
     }
+
 }
