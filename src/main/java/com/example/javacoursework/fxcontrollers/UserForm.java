@@ -1,34 +1,18 @@
 package com.example.javacoursework.fxcontrollers;
 
-import com.example.javacoursework.TestApplication;
-import com.example.javacoursework.hibernatecontrol.CustomHibernate;
 import com.example.javacoursework.hibernatecontrol.GenericHibernate;
 import com.example.javacoursework.model.*;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
-import org.springframework.security.crypto.keygen.KeyGenerators;
 
-import javax.crypto.KeyGenerator;
-import java.io.IOException;
 import java.net.URL;
-import java.security.KeyFactory;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
@@ -105,7 +89,7 @@ public class UserForm implements Initializable {
                fillBasicAttributesForUpdate();
                addressField.setText(((Driver) userForUpdate).getAddress());
                drivingLicenceField.setText(((Driver) userForUpdate).getDriverLicence());
-               bDateSelector.setValue(((Driver) userForUpdate).getBDate());
+               bDateSelector.setValue(((Driver) userForUpdate).getBirthDate());
                vechicleTypeBox.getSelectionModel().select(((Driver) userForUpdate).getVechicleType());
            } else if(userForUpdate instanceof Restaurant) {
                 restaurantRadio.setSelected(true);
@@ -243,7 +227,7 @@ public class UserForm implements Initializable {
             ((Driver) userForUpdate).setAddress(addressField.getText());
             ((Driver) userForUpdate).setDriverLicence(drivingLicenceField.getText());
             ((Driver) userForUpdate).setVechicleType(vechicleTypeBox.getValue());
-            ((Driver) userForUpdate).setBDate(bDateSelector.getValue());
+            ((Driver) userForUpdate).setBirthDate(bDateSelector.getValue());
             userForUpdate.setDateUpdated(LocalDateTime.now());
         } else if(userForUpdate instanceof BasicUser) {
             setBasicAttributesForUpdate();

@@ -2,8 +2,6 @@ package com.example.javacoursework.fxcontrollers;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import lombok.Getter;
-import lombok.Setter;
 
 public class UserTableParameters {
     private SimpleIntegerProperty id = new  SimpleIntegerProperty();
@@ -15,7 +13,7 @@ public class UserTableParameters {
     private SimpleStringProperty phoneNumber = new  SimpleStringProperty();
     private SimpleStringProperty dateCreated = new SimpleStringProperty();
     private SimpleStringProperty dateUpdated = new SimpleStringProperty();
-    private SimpleStringProperty bDate = new  SimpleStringProperty();
+    private SimpleStringProperty birthDate = new  SimpleStringProperty();
     private SimpleStringProperty workHours = new SimpleStringProperty();
     private SimpleStringProperty license = new  SimpleStringProperty();
     private SimpleStringProperty vechicleType = new SimpleStringProperty();
@@ -165,16 +163,16 @@ public class UserTableParameters {
         this.dateUpdated.set(dateUpdated);
     }
 
-    public String getbDate() {
-        return bDate.get();
+    public String getBirthDate() {
+        return birthDate.get();
     }
 
-    public SimpleStringProperty bDateProperty() {
-        return bDate;
+    public SimpleStringProperty birthDateProperty() {
+        return birthDate;
     }
 
-    public void setbDate(String bDate) {
-        this.bDate.set(bDate);
+    public void setBirthDate(String birthDate) {
+        this.birthDate.set(birthDate);
     }
 
     public String getWorkHours() {

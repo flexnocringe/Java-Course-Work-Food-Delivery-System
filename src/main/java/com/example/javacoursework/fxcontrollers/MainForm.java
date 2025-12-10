@@ -18,13 +18,11 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.hibernate.usertype.UserType;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +95,8 @@ public class MainForm implements Initializable {
     @FXML
     public TableColumn<FoodOrder, String> clientOrderColumn;
     @FXML
+    public TableColumn<FoodOrder, String> driverOrderColumn;
+    @FXML
     public TextField orderNameField;
     @FXML
     public TextField orderPriceField;
@@ -122,6 +122,9 @@ public class MainForm implements Initializable {
     public Button acceptOrderButton;
     @FXML
     public Button setForDelivery;
+
+    @FXML
+    public ComboBox<Driver> driverOrderBox;
     //</editor-fold>
 
     //<editor-fold desc="FoodItem Tab, Table And Columns">
@@ -247,7 +250,7 @@ public class MainForm implements Initializable {
         drivingLicenceColumn.setCellValueFactory(new PropertyValueFactory<>("license"));
         dateCreatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
         dateUpdatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateUpdated"));
-        birthDateColumn.setCellValueFactory(new PropertyValueFactory<>("bDate"));
+        birthDateColumn.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
         vechicleTypeColumn.setCellValueFactory(new PropertyValueFactory<>("vechicleType"));
         workHoursColumn.setCellValueFactory(new PropertyValueFactory<>("workHours"));
         //</editor-fold>
@@ -262,6 +265,7 @@ public class MainForm implements Initializable {
         foodOrderNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         foodOrderRestaurantColumn.setCellValueFactory(new PropertyValueFactory<>("restaurant"));
         clientOrderColumn.setCellValueFactory(new PropertyValueFactory<>("buyer"));
+        driverOrderColumn.setCellValueFactory(new PropertyValueFactory<>("driver"));
         foodOrderStatusColumn.setCellValueFactory(new PropertyValueFactory<>("orderStatus"));
         foodOrderPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         //</editor-fold>
@@ -341,7 +345,7 @@ public class MainForm implements Initializable {
                     userTableParameters.setWorkHours(((Restaurant)user).getWorkHours());
                 }
                 if(user instanceof Driver) {
-                    userTableParameters.setbDate(String.valueOf(((Driver) user).getBDate()));
+                    userTableParameters.setBirthDate(String.valueOf(((Driver) user).getBirthDate()));
                     userTableParameters.setLicense(((Driver) user).getDriverLicence());
                     userTableParameters.setVechicleType(String.valueOf(((Driver) user).getVechicleType()));
                 }
@@ -357,12 +361,15 @@ public class MainForm implements Initializable {
             //<editor-fold desc="FoodOrder Management Tab Reload">
             orderStatusFilter.setValue(null);
             clearOrderInputFields();
+            driverOrderBox.setDisable(true);
             acceptOrderButton.setDisable(true);
             acceptOrderButton.setVisible(false);
             setForDelivery.setDisable(true);
             setForDelivery.setVisible(false);
             restaurantOrderBox.getItems().clear();
             restaurantOrderBox.getItems().addAll(customHibernate.getAllRecords(Restaurant.class));
+            driverOrderBox.getItems().clear();
+            driverOrderBox.getItems().addAll(customHibernate.getAllRecords(Driver.class));
             clientOrderBox.getItems().clear();
             clientOrderBox.getItems().addAll(customHibernate.getOnlyBasicUsers());
             List<FoodOrder> foodOrders = getFoodOrders();
@@ -600,10 +607,11 @@ public class MainForm implements Initializable {
         restaurantOrderBox.setValue(null);
         clientOrderBox.setValue(null);
         statusOrderBox.setValue(null);
+        driverOrderBox.setValue(null);
         if(currentUser instanceof  Restaurant) {
             restaurantOrderBox.setValue((Restaurant) currentUser);
             loadRestaurantMenuForOrder();
-        } else if((currentUser instanceof  BasicUser) && (currentUser instanceof User)) {
+        } else if((currentUser instanceof  BasicUser)) {
             clientOrderBox.setValue((BasicUser) currentUser);
             statusOrderBox.setValue(OrderStatus.OPEN);
             createOrderButton.setDisable(false);
@@ -618,7 +626,7 @@ public class MainForm implements Initializable {
 
     public void createOrder(ActionEvent actionEvent) {
         try {
-            FoodOrder foodOrder = new FoodOrder(orderNameField.getText(), Double.parseDouble(orderPriceField.getText()), foodItemForOrderListView.getSelectionModel().getSelectedItems(), clientOrderBox.getValue(), restaurantOrderBox.getValue(), statusOrderBox.getValue(), LocalDateTime.now());
+            FoodOrder foodOrder = new FoodOrder(orderNameField.getText(), Double.parseDouble(orderPriceField.getText()), foodItemForOrderListView.getSelectionModel().getSelectedItems(), clientOrderBox.getValue(), driverOrderBox.getValue(), restaurantOrderBox.getValue(), statusOrderBox.getValue(), LocalDateTime.now());
             customHibernate.create(foodOrder);
             reloadTableData();
         } catch (NumberFormatException e) {
@@ -633,6 +641,7 @@ public class MainForm implements Initializable {
         foodOrder.setPrice(Double.valueOf(orderPriceField.getText()));
         foodOrder.setRestaurant(restaurantOrderBox.getValue());
         foodOrder.setBuyer(clientOrderBox.getValue());
+        foodOrder.setDriver(driverOrderBox.getValue());
         foodOrder.setOrderStatus(statusOrderBox.getValue());
         foodOrder.setFoodItems(foodItemForOrderListView.getSelectionModel().getSelectedItems());
         foodOrder.setDateUpdated(LocalDateTime.now());
@@ -677,12 +686,21 @@ public class MainForm implements Initializable {
             acceptOrderButton.setDisable(true);
             setForDelivery.setDisable(false);
         }
+        if (selectedOrder.getOrderStatus() == OrderStatus.READY_FOR_PICKUP && (currentUser instanceof  User)) {
+            driverOrderBox.setDisable(false);
+        }
         clientOrderBox.getItems().stream()
                 .filter(c -> c.getId() == selectedOrder.getBuyer().getId())
                 .findFirst()
                 .ifPresent(u -> clientOrderBox.getSelectionModel().select(u));
         orderNameField.setText(selectedOrder.getName());
         orderPriceField.setText(selectedOrder.getPrice().toString());
+        if(selectedOrder.getDriver()!=null) {
+            driverOrderBox.getItems().stream()
+                    .filter(c -> c.getId() == selectedOrder.getDriver().getId())
+                    .findFirst()
+                    .ifPresent(u -> driverOrderBox.getSelectionModel().select(u));
+        }
         restaurantOrderBox.getItems().stream()
                 .filter(r -> r.getId() == selectedOrder.getRestaurant().getId())
                 .findFirst()
