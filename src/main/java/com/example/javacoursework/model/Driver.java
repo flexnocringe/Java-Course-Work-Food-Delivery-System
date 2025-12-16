@@ -20,7 +20,7 @@ public class Driver extends BasicUser {
     private LocalDate birthDate;
     @Enumerated(EnumType.STRING)
     private VechicleType vechicleType;
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FoodOrder> driverOrders;
 
     public Driver(String username, String password, String name, String surname, String phoneNumber, LocalDateTime dateCreated, String address, String driverLicence, LocalDate birthDate, VechicleType vechicleType) {
