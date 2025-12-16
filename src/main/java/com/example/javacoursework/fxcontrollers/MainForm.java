@@ -18,13 +18,11 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.hibernate.usertype.UserType;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -247,7 +245,7 @@ public class MainForm implements Initializable {
         drivingLicenceColumn.setCellValueFactory(new PropertyValueFactory<>("license"));
         dateCreatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
         dateUpdatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateUpdated"));
-        birthDateColumn.setCellValueFactory(new PropertyValueFactory<>("bDate"));
+        birthDateColumn.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
         vechicleTypeColumn.setCellValueFactory(new PropertyValueFactory<>("vechicleType"));
         workHoursColumn.setCellValueFactory(new PropertyValueFactory<>("workHours"));
         //</editor-fold>
@@ -341,7 +339,7 @@ public class MainForm implements Initializable {
                     userTableParameters.setWorkHours(((Restaurant)user).getWorkHours());
                 }
                 if(user instanceof Driver) {
-                    userTableParameters.setbDate(String.valueOf(((Driver) user).getBDate()));
+                    userTableParameters.setbDate(String.valueOf(((Driver) user).getBirthDate()));
                     userTableParameters.setLicense(((Driver) user).getDriverLicence());
                     userTableParameters.setVechicleType(String.valueOf(((Driver) user).getVechicleType()));
                 }

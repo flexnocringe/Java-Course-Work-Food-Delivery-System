@@ -227,7 +227,7 @@ public class CustomHibernate extends GenericHibernate {
                 userTableParameters.setWorkHours(((Restaurant)user).getWorkHours());
             }
             if(user instanceof Driver) {
-                userTableParameters.setbDate(String.valueOf(((Driver) user).getBDate()));
+                userTableParameters.setbDate(String.valueOf(((Driver) user).getBirthDate()));
                 userTableParameters.setLicense(((Driver) user).getDriverLicence());
                 userTableParameters.setVechicleType(String.valueOf(((Driver) user).getVechicleType()));
             }

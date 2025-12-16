@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -19,21 +18,21 @@ import java.util.List;
 @Entity
 public class Driver extends BasicUser {
     private String driverLicence;
-    private LocalDate bDate;
+    private LocalDate birthDate;
     @Enumerated(EnumType.STRING)
     private VechicleType vechicleType;
 
-    public Driver(String username, String password, String name, String surname, String phoneNumber, LocalDateTime dateCreated, String address, String driverLicence, LocalDate bDate, VechicleType vechicleType) {
+    public Driver(String username, String password, String name, String surname, String phoneNumber, LocalDateTime dateCreated, String address, String driverLicence, LocalDate birthDate, VechicleType vechicleType) {
         super(username, password, name, surname, phoneNumber, dateCreated, address);
         this.driverLicence = driverLicence;
-        this.bDate = bDate;
+        this.birthDate = birthDate;
         this.vechicleType = vechicleType;
     }
 
-    public Driver(String username, String password, String name, String surname, String phoneNumber, String address, String driverLicence, LocalDate bDate, VechicleType vechicleType) {
+    public Driver(String username, String password, String name, String surname, String phoneNumber, String address, String driverLicence, LocalDate birthDate, VechicleType vechicleType) {
         super(username, password, name, surname, phoneNumber, address);
         this.driverLicence = driverLicence;
-        this.bDate = bDate;
+        this.birthDate = birthDate;
         this.vechicleType = vechicleType;
     }
 }

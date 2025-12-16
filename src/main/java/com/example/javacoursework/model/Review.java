@@ -21,21 +21,19 @@ public class Review {
     private String text;
     private LocalDateTime dateCreated;
     @ManyToOne
-    private User reviewOwner;
-    @ManyToOne
-    private BasicUser feedbackUser;
+    private User messageOwner;
     @ManyToOne
     private Chat chat;
 
-    public Review(String text, LocalDateTime dateCreated, User reviewOwner, Chat chat) {
+    public Review(String text, LocalDateTime dateCreated, User messageOwner, Chat chat) {
         this.text = text;
         this.dateCreated = dateCreated;
-        this.reviewOwner = reviewOwner;
+        this.messageOwner = messageOwner;
         this.chat = chat;
     }
 
     @Override
     public String toString() {
-        return reviewOwner + " says:\n" + text + "\n| " + dateCreated+" |";
+        return messageOwner + " says:\n" + text + "\n| " + dateCreated+" |";
     }
 }
