@@ -13,11 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Review {
+public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int rating;
     private String text;
     private LocalDateTime dateCreated;
     @ManyToOne
@@ -25,7 +24,7 @@ public class Review {
     @ManyToOne
     private Chat chat;
 
-    public Review(String text, LocalDateTime dateCreated, User messageOwner, Chat chat) {
+    public Message(String text, LocalDateTime dateCreated, User messageOwner, Chat chat) {
         this.text = text;
         this.dateCreated = dateCreated;
         this.messageOwner = messageOwner;

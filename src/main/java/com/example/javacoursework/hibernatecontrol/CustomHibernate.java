@@ -1,6 +1,7 @@
 package com.example.javacoursework.hibernatecontrol;
 
 import com.example.javacoursework.fxcontrollers.FxUtils;
+import com.example.javacoursework.fxcontrollers.Salt;
 import com.example.javacoursework.fxcontrollers.UserTableParameters;
 import com.example.javacoursework.model.*;
 import jakarta.persistence.EntityManagerFactory;

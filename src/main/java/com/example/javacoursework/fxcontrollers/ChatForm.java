@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 public class ChatForm {
     @FXML
-    public ListView<Review> chatMessageListView;
+    public ListView<Message> chatMessageListView;
     @FXML
     public TextArea chatMessageTextField;
 
@@ -44,7 +44,7 @@ public class ChatForm {
             currentFoodOrder.setChat(chat);
             customHibernate.edit(currentFoodOrder);
         }
-        Review message = new Review(chatMessageTextField.getText(), LocalDateTime.now(), currentUser, currentFoodOrder.getChat());
+        Message message = new Message(chatMessageTextField.getText(), LocalDateTime.now(), currentUser, currentFoodOrder.getChat());
         customHibernate.create(message);
         chatMessageListView.getItems().add(message);
         chatMessageTextField.clear();

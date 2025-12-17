@@ -175,7 +175,7 @@ public class MainForm implements Initializable {
     @FXML
     public TableColumn<Chat, String> chatDateCreatedColumn;
     @FXML
-    public ListView<Review> chatMessagesListView;
+    public ListView<Message> chatMessagesListView;
     @FXML
     public TextArea chatMessageField;
     @FXML
@@ -764,7 +764,7 @@ public class MainForm implements Initializable {
 
     //<editor-fold desc="Chat Management Tab Funcionality">
     public void sendMessageAsAdmin(ActionEvent actionEvent) {
-        Review message = new Review(chatMessageField.getText(), LocalDateTime.now(), currentUser, chatTable.getSelectionModel().getSelectedItem());
+        Message message = new Message(chatMessageField.getText(), LocalDateTime.now(), currentUser, chatTable.getSelectionModel().getSelectedItem());
         customHibernate.create(message);
         chatMessageField.clear();
         int selectedChat = chatTable.getSelectionModel().getSelectedIndex();
@@ -775,7 +775,7 @@ public class MainForm implements Initializable {
 
     public void deleteChatMessage(ActionEvent actionEvent) {
         try {
-            customHibernate.delete(Review.class, chatMessagesListView.getSelectionModel().getSelectedItem().getId());
+            customHibernate.delete(Message.class, chatMessagesListView.getSelectionModel().getSelectedItem().getId());
             int selectedChat = chatTable.getSelectionModel().getSelectedIndex();
             reloadTableData();
             chatTable.getSelectionModel().select(selectedChat);
