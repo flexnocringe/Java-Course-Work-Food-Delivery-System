@@ -14,9 +14,9 @@ module com.example.javacoursework {
     opens com.example.javacoursework to javafx.fxml, org.hibernate.orm.core, jakarta.persistence;
     exports com.example.javacoursework;
 
-    opens com.example.javacoursework.fxcontrollers to javafx.fxml;
     exports com.example.javacoursework.fxcontrollers;
 
     opens com.example.javacoursework.model to org.hibernate.orm.core;
     exports com.example.javacoursework.model;
+    opens com.example.javacoursework.fxcontrollers to javafx.fxml, org.hibernate.orm.core;
 }

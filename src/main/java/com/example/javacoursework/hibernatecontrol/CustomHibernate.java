@@ -1,6 +1,7 @@
 package com.example.javacoursework.hibernatecontrol;
 
 import com.example.javacoursework.fxcontrollers.FxUtils;
+import com.example.javacoursework.fxcontrollers.Salt;
 import com.example.javacoursework.fxcontrollers.UserTableParameters;
 import com.example.javacoursework.model.*;
 import jakarta.persistence.EntityManagerFactory;
@@ -227,7 +228,7 @@ public class CustomHibernate extends GenericHibernate {
                 userTableParameters.setWorkHours(((Restaurant)user).getWorkHours());
             }
             if(user instanceof Driver) {
-                userTableParameters.setBirthDate(String.valueOf(((Driver) user).getBirthDate()));
+                userTableParameters.setbDate(String.valueOf(((Driver) user).getBirthDate()));
                 userTableParameters.setLicense(((Driver) user).getDriverLicence());
                 userTableParameters.setVechicleType(String.valueOf(((Driver) user).getVechicleType()));
             }

@@ -2,23 +2,17 @@ package com.example.javacoursework.fxcontrollers;
 
 import com.example.javacoursework.TestApplication;
 import com.example.javacoursework.hibernatecontrol.CustomHibernate;
-import com.example.javacoursework.model.Salt;
 import com.example.javacoursework.model.User;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.springframework.security.crypto.encrypt.Encryptors;
-import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import java.io.IOException;
 

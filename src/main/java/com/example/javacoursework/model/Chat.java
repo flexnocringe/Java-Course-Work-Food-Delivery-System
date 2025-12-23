@@ -22,7 +22,7 @@ public class Chat {
     @OneToOne(mappedBy ="chat")
     private FoodOrder foodOrder;
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<Review> messages = new ArrayList<>();
+    private List<Message> messages = new ArrayList<>();
 
     public Chat(String name, LocalDate dateCreated, FoodOrder foodOrder) {
         this.name = name;
