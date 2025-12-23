@@ -23,7 +23,13 @@ public class FoodItem {
     private boolean spicy = false;
     private boolean vegan = false;
     private String ingredients;
+    @ElementCollection(targetClass = Allergens.class)
+    @CollectionTable(
+            name = "fooditem_allergens",
+            joinColumns = @JoinColumn(name = "fooditem_id")
+    )
     @Enumerated(EnumType.STRING)
+    @Column(name = "allergens")
     private List<Allergens> allergens = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     private PortionSize portionSize;

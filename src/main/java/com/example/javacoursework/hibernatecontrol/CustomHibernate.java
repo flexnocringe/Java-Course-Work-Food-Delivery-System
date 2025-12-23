@@ -176,6 +176,23 @@ public class CustomHibernate extends GenericHibernate {
         return foodItems;
     }
 
+    public void deleteFoodOrder(FoodOrder foodOrder) {
+        try{
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            for (FoodItem item : foodOrder.getFoodItems()) {
+                item.getOrderList().remove(foodOrder);
+            }
+            foodOrder.getFoodItems().clear();
+            entityManager.flush();
+            entityManager.remove(foodOrder);
+        } catch(Exception e){
+            FxUtils.generateDialogAlert(Alert.AlertType.WARNING, "Warning!", "Something went wrong during delete operation", e);
+        }finally{
+            if(entityManager!=null)entityManager.close();
+        }
+    }
+
     public List<UserTableParameters> filterUsers(String userType, String username, String name, String surname) {
         entityManager = entityManagerFactory.createEntityManager();
         List<User> users = new ArrayList<>();
@@ -228,7 +245,7 @@ public class CustomHibernate extends GenericHibernate {
                 userTableParameters.setWorkHours(((Restaurant)user).getWorkHours());
             }
             if(user instanceof Driver) {
-                userTableParameters.setbDate(String.valueOf(((Driver) user).getBirthDate()));
+                userTableParameters.setBirthDate(String.valueOf(((Driver) user).getBirthDate()));
                 userTableParameters.setLicense(((Driver) user).getDriverLicence());
                 userTableParameters.setVechicleType(String.valueOf(((Driver) user).getVechicleType()));
             }
@@ -236,5 +253,7 @@ public class CustomHibernate extends GenericHibernate {
         }
         return filteredUsers;
     }
+
+
 }
 

@@ -180,7 +180,7 @@ public class MainForm implements Initializable {
     @FXML
     public TableColumn<Chat, String> chatDateCreatedColumn;
     @FXML
-    public ListView<Review> chatMessagesListView;
+    public ListView<Message> chatMessagesListView;
     @FXML
     public TextArea chatMessageField;
     @FXML
@@ -611,9 +611,7 @@ public class MainForm implements Initializable {
         if(currentUser instanceof  Restaurant) {
             restaurantOrderBox.setValue((Restaurant) currentUser);
             loadRestaurantMenuForOrder();
-        } else if((currentUser instanceof  BasicUser)) {
-            clientOrderBox.setValue((BasicUser) currentUser);
-            statusOrderBox.setValue(OrderStatus.OPEN);
+        } else if((currentUser instanceof  User)) {
             createOrderButton.setDisable(false);
         }
         foodItemForOrderListView.getItems().clear();
@@ -685,6 +683,10 @@ public class MainForm implements Initializable {
         else if(selectedOrder.getOrderStatus() == OrderStatus.ACCEPTED) {
             acceptOrderButton.setDisable(true);
             setForDelivery.setDisable(false);
+        }
+        else{
+            acceptOrderButton.setDisable(true);
+            setForDelivery.setDisable(true);
         }
         if (selectedOrder.getOrderStatus() == OrderStatus.READY_FOR_PICKUP && (currentUser instanceof  User)) {
             driverOrderBox.setDisable(false);
@@ -784,7 +786,7 @@ public class MainForm implements Initializable {
 
     //<editor-fold desc="Chat Management Tab Funcionality">
     public void sendMessageAsAdmin(ActionEvent actionEvent) {
-        Review message = new Review(chatMessageField.getText(), LocalDateTime.now(), currentUser, chatTable.getSelectionModel().getSelectedItem());
+        Message message = new Message(chatMessageField.getText(), LocalDateTime.now(), currentUser, chatTable.getSelectionModel().getSelectedItem());
         customHibernate.create(message);
         chatMessageField.clear();
         int selectedChat = chatTable.getSelectionModel().getSelectedIndex();
@@ -795,7 +797,7 @@ public class MainForm implements Initializable {
 
     public void deleteChatMessage(ActionEvent actionEvent) {
         try {
-            customHibernate.delete(Review.class, chatMessagesListView.getSelectionModel().getSelectedItem().getId());
+            customHibernate.delete(Message.class, chatMessagesListView.getSelectionModel().getSelectedItem().getId());
             int selectedChat = chatTable.getSelectionModel().getSelectedIndex();
             reloadTableData();
             chatTable.getSelectionModel().select(selectedChat);

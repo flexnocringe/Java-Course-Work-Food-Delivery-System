@@ -1,6 +1,8 @@
 package com.example.javacoursework.hibernatecontrol;
 
 import com.example.javacoursework.fxcontrollers.FxUtils;
+import com.example.javacoursework.model.FoodItem;
+import com.example.javacoursework.model.FoodOrder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
@@ -66,6 +68,13 @@ public class GenericHibernate {
             entityManager = entityManagerFactory.createEntityManager();
             entityManager.getTransaction().begin();
             T entity = entityManager.find(entityClass, id);
+            if (entity instanceof FoodOrder order) {
+                for (FoodItem item : order.getFoodItems()) {
+                    item.getOrderList().remove(order);
+                }
+                order.getFoodItems().clear();
+                entityManager.flush();
+            }
             entityManager.remove(entity);
             entityManager.getTransaction().commit();
         }catch(Exception e){

@@ -23,6 +23,11 @@ public class FoodOrder {
     private String name;
     private Double price;
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "foodorder_fooditem",
+            joinColumns = @JoinColumn(name = "orderList_id"),
+            inverseJoinColumns = @JoinColumn(name = "fooditems_id")
+    )
     private List<FoodItem> foodItems = new ArrayList<>();
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Chat chat;
